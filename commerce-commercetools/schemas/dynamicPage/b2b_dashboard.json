@@ -1,0 +1,8 @@
+{
+    "name": "Dashboard",
+    "category": "Business Unit",
+    "icon": "group",
+    "isMultiple": true,
+    "dynamicPageType": "b2b/dashboard",
+    "dataSourceType": "frontastic/empty"
+}

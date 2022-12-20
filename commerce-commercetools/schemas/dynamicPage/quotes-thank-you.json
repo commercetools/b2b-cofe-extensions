@@ -1,0 +1,8 @@
+{
+    "name": "Quote thank you",
+    "category": "Quote",
+    "icon": "group",
+    "isMultiple": true,
+    "dynamicPageType": "b2b/quote-thank-you",
+    "dataSourceType": "frontastic/empty"
+}

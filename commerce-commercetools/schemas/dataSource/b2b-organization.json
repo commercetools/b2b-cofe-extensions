@@ -1,0 +1,7 @@
+{
+  "customDataSourceType": "b2b/organization",
+  "name": "B2B Organization info",
+  "category": "Session",
+  "icon": "account_balance",
+  "schema": []
+}

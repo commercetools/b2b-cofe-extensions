@@ -1,0 +1,8 @@
+{
+    "name": "Business Unit",
+    "category": "Business Unit",
+    "icon": "group",
+    "isMultiple": true,
+    "dynamicPageType": "b2b/business-unit",
+    "dataSourceType": "frontastic/empty"
+}
