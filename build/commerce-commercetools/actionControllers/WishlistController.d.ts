@@ -1,0 +1,10 @@
+import { ActionContext, Request, Response } from '@frontastic/extension-types';
+declare type ActionHook = (request: Request, actionContext: ActionContext) => Promise<Response>;
+export declare const getStoreWishlists: ActionHook;
+export declare const getAllWishlists: ActionHook;
+export declare const getWishlist: ActionHook;
+export declare const createWishlist: ActionHook;
+export declare const addToWishlist: ActionHook;
+export declare const removeLineItem: ActionHook;
+export declare const updateLineItemCount: ActionHook;
+export {};

@@ -6,13 +6,14 @@
             "es2019",
         ],
         "baseUrl": "./",
+        "declaration": true,
         "paths": {
             "@Types/*": ["./types/*"],
         },
         "sourceMap": true,
         "allowJs": true,
         "moduleResolution": "node",
-        "outDir": "./",
+        "outDir": "./build",
         "forceConsistentCasingInFileNames": true,
         "noImplicitReturns": true,
         "noImplicitThis": true,
@@ -43,5 +44,7 @@
         "node_modules/*",
         "build",
         "webpack",
+        "jest.config.js",
+        "_test/"
     ]
 }

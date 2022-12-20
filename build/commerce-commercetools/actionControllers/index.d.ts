@@ -1,0 +1,22 @@
+import * as AccountActions from './AccountController';
+import * as ProductActions from './ProductController';
+import * as CartActions from './CartController';
+import * as WishlistActions from './WishlistController';
+import * as ProjectActions from './ProjectController';
+import * as StoreActions from './StoreController';
+import * as BusinessUnitActions from './BusinessUnitController';
+import * as CustomerActions from './CustomerController';
+import * as QuoteActions from './QuoteController';
+import * as DashboardActions from './DashboardController';
+export declare const actions: {
+    account: typeof AccountActions;
+    cart: typeof CartActions;
+    customer: typeof CustomerActions;
+    product: typeof ProductActions;
+    wishlist: typeof WishlistActions;
+    project: typeof ProjectActions;
+    store: typeof StoreActions;
+    quote: typeof QuoteActions;
+    'business-unit': typeof BusinessUnitActions;
+    dashboard: typeof DashboardActions;
+};

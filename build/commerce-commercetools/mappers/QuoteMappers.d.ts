@@ -1,0 +1,11 @@
+import { CustomerReference, LineItem as CommercetoolsLineItem, QuoteRequest as CommercetoolsQuoteRequest, StagedQuote as CommercetoolsStagedQuote, Quote as CommercetoolsQuote, CartReference } from '@commercetools/platform-sdk';
+import { Locale } from 'commerce-commercetools/Locale';
+import { LineItem } from '@Types/cart/LineItem';
+import { QuoteRequest } from '@Types/quotes/QuoteRequest';
+import { Cart } from '@Types/cart/Cart';
+export declare const mapCommercetoolsQuoteRequest: (results: CommercetoolsQuoteRequest[], locale: Locale) => QuoteRequest[];
+export declare const mapCommercetoolsQuote: (results: CommercetoolsQuote[], locale: Locale) => any[];
+export declare const mapCommercetoolsStagedQuote: (results: CommercetoolsStagedQuote[], locale: Locale) => any[];
+export declare const mapCustomerReferences: (customer: CustomerReference) => CustomerReference;
+export declare const mapQuotationCartReference: (cartReference: CartReference, locale: Locale) => Cart | CartReference;
+export declare const mapCommercetoolsLineitems: (lineitems: CommercetoolsLineItem[], locale: Locale) => LineItem[];

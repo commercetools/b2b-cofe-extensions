@@ -1,9 +1,13 @@
 {
-    "name": "@b2bdemo/demo-backend",
+    "name": "@b2bdemo/backend",
     "version": "1.0.0",
     "license": "MIT",
     "private": true,
-    "main": "./index.ts",
+    "main": "build/index.js",
+    "types": "build/index.d.ts",
+    "files": [
+        "build/**/*"
+    ],
     "scripts": {
         "extensions:watch": "webpack --watch --config webpack/webpack.dev.js",
         "build": "webpack --config webpack/webpack.prod.js",
