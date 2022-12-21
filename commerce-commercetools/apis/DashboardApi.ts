@@ -1,5 +1,5 @@
 import { BaseApi } from './BaseApi';
-import { DashboardCustomObjectDraft, DashboardCustomObject } from '../../types/dashboard/Dashboard';
+import { DashboardCustomObjectDraft, DashboardCustomObject } from '@Types/dashboard/Dashboard';
 
 export class DashboardApi extends BaseApi {
   create: (dashboard: DashboardCustomObjectDraft) => Promise<DashboardCustomObject> = async (

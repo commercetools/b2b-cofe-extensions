@@ -8,7 +8,7 @@
         "baseUrl": "./",
         "declaration": true,
         "paths": {
-            "@Types/*": ["./types/*"],
+            "@Types/*": ["node_modules/@b2bdemo/types/build/*"],
         },
         "sourceMap": true,
         "allowJs": true,
@@ -24,7 +24,8 @@
         "skipLibCheck": true,
         "typeRoots": [
             "node_modules/@types",
-            "node_modules/@commercetools/platform-sdk/dist/declarations/src/index.d.ts"
+            "node_modules/@commercetools/platform-sdk/dist/declarations/src/index.d.ts",
+            "node_modules/@b2bdemo/types/build"
         ],
         "types": [
             "node",

@@ -2,18 +2,18 @@ import { DataSourceConfiguration, DataSourceContext } from '@frontastic/extensio
 declare const _default: {
     'frontastic/categories': (config: DataSourceConfiguration, context: DataSourceContext) => Promise<{
         dataSourcePayload: {
-            categories: import("../types/product/Category").Category[];
+            categories: import("@b2bdemo/types/build/product/Category").Category[];
         };
     }>;
     'frontastic/product-list': (config: DataSourceConfiguration, context: DataSourceContext) => Promise<{
-        dataSourcePayload: import("../types/product/Result").Result;
+        dataSourcePayload: import("@b2bdemo/types/build/product/Result").Result;
     }>;
     'frontastic/similar-products': (config: DataSourceConfiguration, context: DataSourceContext) => Promise<{
-        dataSourcePayload: import("../types/product/Result").Result;
+        dataSourcePayload: import("@b2bdemo/types/build/product/Result").Result;
     }>;
     'frontastic/product': (config: DataSourceConfiguration, context: DataSourceContext) => Promise<{
         dataSourcePayload: {
-            product: import("../types/product/Product").Product;
+            product: import("@b2bdemo/types/build/product/Product").Product;
         };
     }>;
     'b2b/organization': (config: DataSourceConfiguration, context: DataSourceContext) => {
@@ -23,7 +23,7 @@ declare const _default: {
     };
     'b2b/organization-tree': (config: DataSourceConfiguration, context: DataSourceContext) => Promise<{
         dataSourcePayload: {
-            tree: import("../types/business-unit/BusinessUnit").BusinessUnit[];
+            tree: import("@b2bdemo/types/build/business-unit/BusinessUnit").BusinessUnit[];
         };
     }>;
 };
