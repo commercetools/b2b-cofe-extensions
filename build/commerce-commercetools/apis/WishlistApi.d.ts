@@ -1,5 +1,5 @@
 import { BaseApi } from './BaseApi';
-import { Wishlist, WishlistDraft } from '@Types/wishlist/Wishlist';
+import { Wishlist, WishlistDraft } from '../../../node_modules/@b2bdemo/types/build/wishlist/Wishlist';
 interface AddToWishlistRequest {
     sku: string;
     count: number;

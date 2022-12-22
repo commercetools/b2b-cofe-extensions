@@ -1,8 +1,20 @@
-import { ProductMapper } from '../mappers/ProductMapper';
-import { BaseApi } from './BaseApi';
-import { FilterFieldTypes } from '@Types/product/FilterField';
-import { FilterTypes } from '@Types/query/Filter';
-export class ProductApi extends BaseApi {
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ProductApi = void 0;
+const ProductMapper_1 = require("../mappers/ProductMapper");
+const BaseApi_1 = require("./BaseApi");
+const FilterField_1 = require("../../../node_modules/@b2bdemo/types/build/product/FilterField");
+const Filter_1 = require("../../../node_modules/@b2bdemo/types/build/query/Filter");
+class ProductApi extends BaseApi_1.BaseApi {
     constructor() {
         super(...arguments);
         this.getOffsetFromCursor = (cursor) => {
@@ -12,15 +24,15 @@ export class ProductApi extends BaseApi {
             const offsetMach = cursor.match(/(?<=offset:).+/);
             return offsetMach !== null ? +Object.values(offsetMach)[0] : undefined;
         };
-        this.query = async (productQuery, additionalQueryArgs, additionalFacets = []) => {
+        this.query = (productQuery, additionalQueryArgs, additionalFacets = []) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const limit = +productQuery.limit || 24;
                 const filterQuery = [];
                 const filterFacets = [];
                 const sortAttributes = [];
                 const facetDefinitions = [
-                    ...ProductMapper.commercetoolsProductTypesToFacetDefinitions(await this.getProductTypes(), locale),
+                    ...ProductMapper_1.ProductMapper.commercetoolsProductTypesToFacetDefinitions(yield this.getProductTypes(), locale),
                     ...additionalFacets,
                     {
                         attributeId: 'variants.scopedPrice.value',
@@ -31,7 +43,7 @@ export class ProductApi extends BaseApi {
                         attributeType: 'money',
                     },
                 ];
-                const queryArgFacets = ProductMapper.facetDefinitionsToCommercetoolsQueryArgFacets(facetDefinitions, locale);
+                const queryArgFacets = ProductMapper_1.ProductMapper.facetDefinitionsToCommercetoolsQueryArgFacets(facetDefinitions, locale);
                 if (productQuery.productIds !== undefined && productQuery.productIds.length !== 0) {
                     filterQuery.push(`id:"${productQuery.productIds.join('","')}"`);
                 }
@@ -45,13 +57,13 @@ export class ProductApi extends BaseApi {
                     productQuery.filters.forEach((filter) => {
                         var _a, _b, _c;
                         switch (filter.type) {
-                            case FilterTypes.TERM:
+                            case Filter_1.FilterTypes.TERM:
                                 filterQuery.push(`${filter.identifier}.key:"${filter.terms.join('","')}"`);
                                 break;
-                            case FilterTypes.BOOLEAN:
+                            case Filter_1.FilterTypes.BOOLEAN:
                                 filterQuery.push(`${filter.identifier}:${((_a = filter.terms[0]) === null || _a === void 0 ? void 0 : _a.toString().toLowerCase()) === 'true'}`);
                                 break;
-                            case FilterTypes.RANGE:
+                            case Filter_1.FilterTypes.RANGE:
                                 if (filter.identifier === 'price') {
                                     filterQuery.push(`variants.scopedPrice.value.centAmount:range (${(_b = filter.min) !== null && _b !== void 0 ? _b : '*'} to ${(_c = filter.max) !== null && _c !== void 0 ? _c : '*'})`);
                                 }
@@ -60,7 +72,7 @@ export class ProductApi extends BaseApi {
                     });
                 }
                 if (productQuery.facets !== undefined) {
-                    filterFacets.push(...ProductMapper.facetDefinitionsToFilterFacets(productQuery.facets, facetDefinitions, locale));
+                    filterFacets.push(...ProductMapper_1.ProductMapper.facetDefinitionsToFilterFacets(productQuery.facets, facetDefinitions, locale));
                 }
                 if (productQuery.sortAttributes !== undefined) {
                     Object.keys(productQuery.sortAttributes).map((field, directionIndex) => {
@@ -71,35 +83,22 @@ export class ProductApi extends BaseApi {
                     sortAttributes.push(`variants.attributes.salesRank asc`);
                 }
                 const methodArgs = {
-                    queryArgs: {
-                        sort: sortAttributes,
-                        limit: limit,
-                        offset: this.getOffsetFromCursor(productQuery.cursor),
-                        priceCurrency: locale.currency,
-                        priceCountry: locale.country,
-                        facet: queryArgFacets.length > 0 ? queryArgFacets : undefined,
-                        filter: filterFacets.length > 0 ? filterFacets : undefined,
-                        expand: 'categories[*]',
-                        'filter.facets': filterFacets.length > 0 ? filterFacets : undefined,
-                        'filter.query': filterQuery.length > 0 ? filterQuery : undefined,
-                        [`text.${locale.language}`]: productQuery.query,
-                        ...additionalQueryArgs,
-                    },
+                    queryArgs: Object.assign({ sort: sortAttributes, limit: limit, offset: this.getOffsetFromCursor(productQuery.cursor), priceCurrency: locale.currency, priceCountry: locale.country, facet: queryArgFacets.length > 0 ? queryArgFacets : undefined, filter: filterFacets.length > 0 ? filterFacets : undefined, expand: 'categories[*]', 'filter.facets': filterFacets.length > 0 ? filterFacets : undefined, 'filter.query': filterQuery.length > 0 ? filterQuery : undefined, [`text.${locale.language}`]: productQuery.query }, additionalQueryArgs),
                 };
-                return await this.getApiForProject()
+                return yield this.getApiForProject()
                     .productProjections()
                     .search()
                     .get(methodArgs)
                     .execute()
                     .then((response) => {
-                    const items = response.body.results.map((product) => ProductMapper.commercetoolsProductProjectionToProduct(product, locale));
+                    const items = response.body.results.map((product) => ProductMapper_1.ProductMapper.commercetoolsProductProjectionToProduct(product, locale));
                     const result = {
                         total: response.body.total,
                         items: items,
                         count: response.body.count,
-                        facets: ProductMapper.commercetoolsFacetResultsToFacets(response.body.facets, productQuery, locale),
-                        previousCursor: ProductMapper.calculatePreviousCursor(response.body.offset, response.body.count),
-                        nextCursor: ProductMapper.calculateNextCursor(response.body.offset, response.body.count, response.body.total),
+                        facets: ProductMapper_1.ProductMapper.commercetoolsFacetResultsToFacets(response.body.facets, productQuery, locale),
+                        previousCursor: ProductMapper_1.ProductMapper.calculatePreviousCursor(response.body.offset, response.body.count),
+                        nextCursor: ProductMapper_1.ProductMapper.calculateNextCursor(response.body.offset, response.body.count, response.body.total),
                         query: productQuery,
                     };
                     return result;
@@ -111,26 +110,26 @@ export class ProductApi extends BaseApi {
             catch (error) {
                 throw new Error(`query failed. ${error}`);
             }
-        };
-        this.getProduct = async (productQuery, additionalQueryArgs) => {
+        });
+        this.getProduct = (productQuery, additionalQueryArgs) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = await this.query(productQuery, additionalQueryArgs);
+                const result = yield this.query(productQuery, additionalQueryArgs);
                 return result.items.shift();
             }
             catch (error) {
                 throw new Error(`getProduct failed. ${error}`);
             }
-        };
-        this.getSearchableAttributes = async () => {
+        });
+        this.getSearchableAttributes = () => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const response = await this.getApiForProject().productTypes().get().execute();
-                const filterFields = ProductMapper.commercetoolsProductTypesToFilterFields(response.body.results, locale);
+                const locale = yield this.getCommercetoolsLocal();
+                const response = yield this.getApiForProject().productTypes().get().execute();
+                const filterFields = ProductMapper_1.ProductMapper.commercetoolsProductTypesToFilterFields(response.body.results, locale);
                 filterFields.push({
                     field: 'categoryId',
-                    type: FilterFieldTypes.ENUM,
+                    type: FilterField_1.FilterFieldTypes.ENUM,
                     label: 'Category ID',
-                    values: await this.queryCategories({ limit: 250 }).then((result) => {
+                    values: yield this.queryCategories({ limit: 250 }).then((result) => {
                         return result.items.map((item) => {
                             return {
                                 value: item.categoryId,
@@ -144,18 +143,18 @@ export class ProductApi extends BaseApi {
             catch (error) {
                 throw new Error(`getSearchableAttributes failed. ${error}`);
             }
-        };
-        this.getAttributeGroup = async (key) => {
+        });
+        this.getAttributeGroup = (key) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { body } = await this.getApiForProject().attributeGroups().withKey({ key }).get().execute();
-                return ProductMapper.commercetoolsAttributeGroupToString(body);
+                const { body } = yield this.getApiForProject().attributeGroups().withKey({ key }).get().execute();
+                return ProductMapper_1.ProductMapper.commercetoolsAttributeGroupToString(body);
             }
             catch (error) {
                 throw new Error(`get attributeGroup failed. ${error}`);
             }
-        };
-        this.getNavigationCategories = async () => {
-            const { items } = await this.queryCategories({ limit: 500 });
+        });
+        this.getNavigationCategories = () => __awaiter(this, void 0, void 0, function* () {
+            const { items } = yield this.queryCategories({ limit: 500 });
             const categories = items.filter((item) => { var _a; return !((_a = item.ancestors) === null || _a === void 0 ? void 0 : _a.length); });
             const subCategories = items
                 .filter((item) => { var _a; return !!((_a = item.ancestors) === null || _a === void 0 ? void 0 : _a.length); })
@@ -178,10 +177,10 @@ export class ProductApi extends BaseApi {
                 }
             }
             return categories;
-        };
-        this.queryCategories = async (categoryQuery) => {
+        });
+        this.queryCategories = (categoryQuery) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const limit = +categoryQuery.limit || 24;
                 const where = [];
                 if (categoryQuery.slug) {
@@ -197,18 +196,18 @@ export class ProductApi extends BaseApi {
                         where: where.length > 0 ? where : undefined,
                     },
                 };
-                return await this.getApiForProject()
+                return yield this.getApiForProject()
                     .categories()
                     .get(methodArgs)
                     .execute()
                     .then((response) => {
-                    const items = response.body.results.map((category) => ProductMapper.commercetoolsCategoryToCategory(category, locale));
+                    const items = response.body.results.map((category) => ProductMapper_1.ProductMapper.commercetoolsCategoryToCategory(category, locale));
                     const result = {
                         total: response.body.total,
                         items: items,
                         count: response.body.count,
-                        previousCursor: ProductMapper.calculatePreviousCursor(response.body.offset, response.body.count),
-                        nextCursor: ProductMapper.calculateNextCursor(response.body.offset, response.body.count, response.body.total),
+                        previousCursor: ProductMapper_1.ProductMapper.calculatePreviousCursor(response.body.offset, response.body.count),
+                        nextCursor: ProductMapper_1.ProductMapper.calculateNextCursor(response.body.offset, response.body.count, response.body.total),
                         query: categoryQuery,
                     };
                     return result;
@@ -220,7 +219,8 @@ export class ProductApi extends BaseApi {
             catch (error) {
                 throw new Error(`queryCategories failed. ${error}`);
             }
-        };
+        });
     }
 }
+exports.ProductApi = ProductApi;
 //# sourceMappingURL=ProductApi.js.map

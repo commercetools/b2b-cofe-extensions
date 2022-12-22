@@ -1,13 +1,25 @@
-import { BaseApi } from './BaseApi';
-import { WishlistMapper } from '../mappers/WishlistMapper';
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WishlistApi = void 0;
+const BaseApi_1 = require("./BaseApi");
+const WishlistMapper_1 = require("../mappers/WishlistMapper");
 const expandVariants = ['lineItems[*].variant', 'store'];
-export class WishlistApi extends BaseApi {
+class WishlistApi extends BaseApi_1.BaseApi {
     constructor() {
         super(...arguments);
-        this.getById = async (wishlistId) => {
+        this.getById = (wishlistId) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const response = yield this.getApiForProject()
                     .shoppingLists()
                     .withId({ ID: wishlistId })
                     .get({
@@ -16,16 +28,16 @@ export class WishlistApi extends BaseApi {
                     },
                 })
                     .execute();
-                return WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
+                return WishlistMapper_1.WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
             }
             catch (error) {
                 throw new Error(`Get wishlist by ID failed: ${error}`);
             }
-        };
-        this.getForAccount = async (accountId) => {
+        });
+        this.getForAccount = (accountId) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const response = yield this.getApiForProject()
                     .shoppingLists()
                     .get({
                     queryArgs: {
@@ -34,16 +46,16 @@ export class WishlistApi extends BaseApi {
                     },
                 })
                     .execute();
-                return response.body.results.map((shoppingList) => WishlistMapper.commercetoolsShoppingListToWishlist(shoppingList, locale));
+                return response.body.results.map((shoppingList) => WishlistMapper_1.WishlistMapper.commercetoolsShoppingListToWishlist(shoppingList, locale));
             }
             catch (error) {
                 throw new Error(`Get wishlist for account failed: ${error}`);
             }
-        };
-        this.getForAccountStore = async (accountId, storeKey) => {
+        });
+        this.getForAccountStore = (accountId, storeKey) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const response = yield this.getApiForProject()
                     .shoppingLists()
                     .get({
                     queryArgs: {
@@ -52,16 +64,16 @@ export class WishlistApi extends BaseApi {
                     },
                 })
                     .execute();
-                return response.body.results.map((shoppingList) => WishlistMapper.commercetoolsShoppingListToWishlist(shoppingList, locale));
+                return response.body.results.map((shoppingList) => WishlistMapper_1.WishlistMapper.commercetoolsShoppingListToWishlist(shoppingList, locale));
             }
             catch (error) {
                 throw new Error(`Get wishlist for account failed: ${error}`);
             }
-        };
-        this.getByIdForAccount = async (wishlistId, accountId) => {
+        });
+        this.getByIdForAccount = (wishlistId, accountId) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const response = yield this.getApiForProject()
                     .shoppingLists()
                     .withId({ ID: wishlistId })
                     .get({
@@ -71,17 +83,17 @@ export class WishlistApi extends BaseApi {
                     },
                 })
                     .execute();
-                return WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
+                return WishlistMapper_1.WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
             }
             catch (error) {
                 throw error;
             }
-        };
-        this.create = async (accountId, storeKey, wishlist) => {
+        });
+        this.create = (accountId, storeKey, wishlist) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const body = WishlistMapper.wishlistToCommercetoolsShoppingListDraft(accountId, storeKey, wishlist, locale);
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const body = WishlistMapper_1.WishlistMapper.wishlistToCommercetoolsShoppingListDraft(accountId, storeKey, wishlist, locale);
+                const response = yield this.getApiForProject()
                     .shoppingLists()
                     .post({
                     body: body,
@@ -90,16 +102,16 @@ export class WishlistApi extends BaseApi {
                     },
                 })
                     .execute();
-                return WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
+                return WishlistMapper_1.WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
             }
             catch (error) {
                 throw new Error(`Create wishlist failed: ${error}`);
             }
-        };
-        this.addToWishlist = async (wishlist, request) => {
+        });
+        this.addToWishlist = (wishlist, request) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const response = yield this.getApiForProject()
                     .shoppingLists()
                     .withId({ ID: wishlist.wishlistId })
                     .post({
@@ -118,16 +130,16 @@ export class WishlistApi extends BaseApi {
                     },
                 })
                     .execute();
-                return WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
+                return WishlistMapper_1.WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
             }
             catch (error) {
                 throw new Error(`Add to wishlist failed: ${error}`);
             }
-        };
-        this.removeLineItem = async (wishlist, lineItemId) => {
+        });
+        this.removeLineItem = (wishlist, lineItemId) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const response = yield this.getApiForProject()
                     .shoppingLists()
                     .withId({ ID: wishlist.wishlistId })
                     .post({
@@ -145,16 +157,16 @@ export class WishlistApi extends BaseApi {
                     },
                 })
                     .execute();
-                return WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
+                return WishlistMapper_1.WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
             }
             catch (error) {
                 throw new Error(`Add to wishlist failed: ${error}`);
             }
-        };
-        this.updateLineItemCount = async (wishlist, lineItemId, count) => {
+        });
+        this.updateLineItemCount = (wishlist, lineItemId, count) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const response = yield this.getApiForProject()
                     .shoppingLists()
                     .withId({ ID: wishlist.wishlistId })
                     .post({
@@ -173,12 +185,13 @@ export class WishlistApi extends BaseApi {
                     },
                 })
                     .execute();
-                return WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
+                return WishlistMapper_1.WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
             }
             catch (error) {
                 throw new Error(`Update line item count: ${error}`);
             }
-        };
+        });
     }
 }
+exports.WishlistApi = WishlistApi;
 //# sourceMappingURL=WishlistApi.js.map

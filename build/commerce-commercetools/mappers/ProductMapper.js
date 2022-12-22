@@ -1,16 +1,19 @@
-import { ProductRouter } from '../utils/ProductRouter';
-import { FilterFieldTypes } from '@Types/product/FilterField';
-import { FacetTypes } from '@Types/result/Facet';
-import { FilterTypes } from '@Types/query/Filter';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ProductMapper = void 0;
+const ProductRouter_1 = require("../utils/ProductRouter");
+const FilterField_1 = require("../../../node_modules/@b2bdemo/types/build/product/FilterField");
+const Facet_1 = require("../../../node_modules/@b2bdemo/types/build/result/Facet");
+const Filter_1 = require("../../../node_modules/@b2bdemo/types/build/query/Filter");
 const TypeMap = new Map([
-    ['boolean', FilterFieldTypes.BOOLEAN],
-    ['enum', FilterFieldTypes.ENUM],
-    ['text', FilterFieldTypes.TEXT],
-    ['number', FilterFieldTypes.NUMBER],
-    ['lenum', FilterFieldTypes.ENUM],
-    ['ltext', FilterFieldTypes.TEXT],
+    ['boolean', FilterField_1.FilterFieldTypes.BOOLEAN],
+    ['enum', FilterField_1.FilterFieldTypes.ENUM],
+    ['text', FilterField_1.FilterFieldTypes.TEXT],
+    ['number', FilterField_1.FilterFieldTypes.NUMBER],
+    ['lenum', FilterField_1.FilterFieldTypes.ENUM],
+    ['ltext', FilterField_1.FilterFieldTypes.TEXT],
 ]);
-export class ProductMapper {
+class ProductMapper {
     static extractAttributeValue(commercetoolsAttributeValue, locale) {
         if (commercetoolsAttributeValue['key'] !== undefined && commercetoolsAttributeValue['label'] !== undefined) {
             return {
@@ -178,7 +181,7 @@ export class ProductMapper {
                 case 'text':
                 case 'reference':
                 default:
-                    if (queryFacet.type === FilterTypes.TERM || queryFacet.type === FilterTypes.BOOLEAN) {
+                    if (queryFacet.type === Filter_1.FilterTypes.TERM || queryFacet.type === Filter_1.FilterTypes.BOOLEAN) {
                         filterFacets.push(`${queryFacet.identifier}:"${queryFacet.terms.join('","')}"`);
                     }
                     else {
@@ -213,7 +216,7 @@ export class ProductMapper {
     }
     static commercetoolsRangeFacetResultToRangeFacet(facetKey, facetResult, facetQuery) {
         const rangeFacet = {
-            type: FacetTypes.RANGE,
+            type: Facet_1.FacetTypes.RANGE,
             identifier: facetKey,
             label: facetKey,
             key: facetKey,
@@ -227,7 +230,7 @@ export class ProductMapper {
     }
     static commercetoolsTermFacetResultToTermFacet(facetKey, facetResult, facetQuery) {
         const termFacet = {
-            type: FacetTypes.TERM,
+            type: Facet_1.FacetTypes.TERM,
             identifier: facetKey,
             label: facetKey,
             key: facetKey,
@@ -248,7 +251,7 @@ export class ProductMapper {
     static commercetoolsTermNumberFacetResultToRangeFacet(facetKey, facetResult, facetQuery) {
         var _a, _b;
         const rangeFacet = {
-            type: FacetTypes.RANGE,
+            type: Facet_1.FacetTypes.RANGE,
             identifier: facetKey,
             label: facetKey,
             key: facetKey,
@@ -283,6 +286,7 @@ export class ProductMapper {
         return undefined;
     }
 }
+exports.ProductMapper = ProductMapper;
 ProductMapper.commercetoolsProductProjectionToProduct = (commercetoolsProduct, locale) => {
     var _a, _b, _c, _d;
     const product = {
@@ -294,7 +298,7 @@ ProductMapper.commercetoolsProductProjectionToProduct = (commercetoolsProduct, l
         categories: ProductMapper.commercetoolsCategoryReferencesToCategories(commercetoolsProduct.categories, locale),
         variants: ProductMapper.commercetoolsProductProjectionToVariants(commercetoolsProduct, locale),
     };
-    product._url = ProductRouter.generateUrlFor(product);
+    product._url = ProductRouter_1.ProductRouter.generateUrlFor(product);
     return product;
 };
 ProductMapper.commercetoolsProductProjectionToVariants = (commercetoolsProduct, locale) => {

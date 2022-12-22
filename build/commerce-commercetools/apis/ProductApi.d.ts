@@ -1,10 +1,10 @@
-import { Result } from '@Types/product/Result';
-import { ProductQuery } from '@Types/query/ProductQuery';
-import { Product } from '@Types/product/Product';
+import { Result } from '../../../node_modules/@b2bdemo/types/build/product/Result';
+import { ProductQuery } from '../../../node_modules/@b2bdemo/types/build/query/ProductQuery';
+import { Product } from '../../../node_modules/@b2bdemo/types/build/product/Product';
 import { BaseApi } from './BaseApi';
-import { FilterField } from '@Types/product/FilterField';
-import { CategoryQuery } from '@Types/query/CategoryQuery';
-import { Category } from '@Types/product/Category';
+import { FilterField } from '../../../node_modules/@b2bdemo/types/build/product/FilterField';
+import { CategoryQuery } from '../../../node_modules/@b2bdemo/types/build/query/CategoryQuery';
+import { Category } from '../../../node_modules/@b2bdemo/types/build/product/Category';
 export declare class ProductApi extends BaseApi {
     protected getOffsetFromCursor: (cursor: string) => number;
     query: (productQuery: ProductQuery, additionalQueryArgs?: object, additionalFacets?: object[]) => Promise<Result>;

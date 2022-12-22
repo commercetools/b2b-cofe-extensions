@@ -1,6 +1,6 @@
 import { Request, Response } from '@frontastic/extension-types';
 import { ActionContext } from '@frontastic/extension-types';
-import { Address } from '@Types/account/Address';
+import { Address } from '../../../node_modules/@b2bdemo/types/build/account/Address';
 declare type ActionHook = (request: Request, actionContext: ActionContext) => Promise<Response>;
 export declare type AccountRegisterBody = {
     email?: string;

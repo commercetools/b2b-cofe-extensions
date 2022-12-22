@@ -1,18 +1,18 @@
-import { Cart } from '@Types/cart/Cart';
+import { Cart } from '../../../node_modules/@b2bdemo/types/build/cart/Cart';
 import { AddressDraft } from '@commercetools/platform-sdk';
-import { LineItem, LineItemReturnItemDraft } from '@Types/cart/LineItem';
+import { LineItem, LineItemReturnItemDraft } from '../../../node_modules/@b2bdemo/types/build/cart/LineItem';
 import { Cart as CommercetoolsCart } from '@commercetools/platform-sdk';
 import { CartUpdate } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/cart';
-import { Address } from '@Types/account/Address';
-import { Order } from '@Types/cart/Order';
+import { Address } from '../../../node_modules/@b2bdemo/types/build/account/Address';
+import { Order } from '../../../node_modules/@b2bdemo/types/build/cart/Order';
 import { BaseApi } from './BaseApi';
-import { ShippingMethod } from '@Types/cart/ShippingMethod';
+import { ShippingMethod } from '../../../node_modules/@b2bdemo/types/build/cart/ShippingMethod';
 import { Locale } from '../Locale';
-import { Payment } from '@Types/cart/Payment';
-import { Account } from '@Types/account/Account';
-import { Discount } from '@Types/cart/Discount';
-import { ActionResult } from '@Types/result/ActionResult';
-import { Organization } from '@Types/organization/organization';
+import { Payment } from '../../../node_modules/@b2bdemo/types/build/cart/Payment';
+import { Account } from '../../../node_modules/@b2bdemo/types/build/account/Account';
+import { Discount } from '../../../node_modules/@b2bdemo/types/build/cart/Discount';
+import { ActionResult } from '../../../node_modules/@b2bdemo/types/build/result/ActionResult';
+import { Organization } from '../../../node_modules/@b2bdemo/types/build/organization/organization';
 export declare class CartApi extends BaseApi {
     getForUser: (account: Account, organization: Organization) => Promise<Cart>;
     createCart: (customerId: string, organization: Organization) => Promise<Cart>;

@@ -1,7 +1,19 @@
-import { WishlistApi } from '../apis/WishlistApi';
-import { getLocale } from '../utils/Request';
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.updateLineItemCount = exports.removeLineItem = exports.addToWishlist = exports.createWishlist = exports.getWishlist = exports.getAllWishlists = exports.getStoreWishlists = void 0;
+const WishlistApi_1 = require("../apis/WishlistApi");
+const Request_1 = require("../utils/Request");
 function getWishlistApi(request, actionContext) {
-    return new WishlistApi(actionContext.frontasticContext, getLocale(request));
+    return new WishlistApi_1.WishlistApi(actionContext.frontasticContext, (0, Request_1.getLocale)(request));
 }
 function fetchStoreFromSession(request) {
     var _a, _b, _c;
@@ -22,20 +34,22 @@ function fetchAccountFromSessionEnsureLoggedIn(request) {
     }
     return account;
 }
-async function fetchWishlist(request, wishlistApi) {
-    const account = fetchAccountFromSessionEnsureLoggedIn(request);
-    const wishlistId = request.query.id;
-    if (wishlistId !== undefined) {
-        return await wishlistApi.getByIdForAccount(wishlistId, account.accountId);
-    }
-    return null;
+function fetchWishlist(request, wishlistApi) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const account = fetchAccountFromSessionEnsureLoggedIn(request);
+        const wishlistId = request.query.id;
+        if (wishlistId !== undefined) {
+            return yield wishlistApi.getByIdForAccount(wishlistId, account.accountId);
+        }
+        return null;
+    });
 }
-export const getStoreWishlists = async (request, actionContext) => {
+const getStoreWishlists = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const account = fetchAccountFromSessionEnsureLoggedIn(request);
         const wishlistApi = getWishlistApi(request, actionContext);
         const storeKey = fetchStoreFromSession(request);
-        const wishlists = await wishlistApi.getForAccountStore(account.accountId, storeKey);
+        const wishlists = yield wishlistApi.getForAccountStore(account.accountId, storeKey);
         return {
             statusCode: 200,
             body: JSON.stringify(wishlists),
@@ -50,22 +64,24 @@ export const getStoreWishlists = async (request, actionContext) => {
         };
         return response;
     }
-};
-export const getAllWishlists = async (request, actionContext) => {
+});
+exports.getStoreWishlists = getStoreWishlists;
+const getAllWishlists = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     const account = fetchAccountFromSessionEnsureLoggedIn(request);
     const wishlistApi = getWishlistApi(request, actionContext);
-    const wishlists = await wishlistApi.getForAccount(account.accountId);
+    const wishlists = yield wishlistApi.getForAccount(account.accountId);
     return {
         statusCode: 200,
         body: JSON.stringify(wishlists),
         sessionData: request.sessionData,
     };
-};
-export const getWishlist = async (request, actionContext) => {
+});
+exports.getAllWishlists = getAllWishlists;
+const getWishlist = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const wishlistApi = getWishlistApi(request, actionContext);
     try {
-        const wishlist = await fetchWishlist(request, wishlistApi);
+        const wishlist = yield fetchWishlist(request, wishlistApi);
         return {
             statusCode: 200,
             body: JSON.stringify(wishlist),
@@ -80,26 +96,28 @@ export const getWishlist = async (request, actionContext) => {
             errorCode: 500,
         };
     }
-};
-export const createWishlist = async (request, actionContext) => {
+});
+exports.getWishlist = getWishlist;
+const createWishlist = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     const wishlistApi = getWishlistApi(request, actionContext);
     const { wishlist } = JSON.parse(request.body);
     const account = fetchAccountFromSessionEnsureLoggedIn(request);
     const store = fetchStoreFromSession(request);
-    const wishlistRes = await wishlistApi.create(account.accountId, store, wishlist);
+    const wishlistRes = yield wishlistApi.create(account.accountId, store, wishlist);
     return {
         statusCode: 200,
         body: JSON.stringify(wishlistRes),
         sessionData: request.sessionData,
     };
-};
-export const addToWishlist = async (request, actionContext) => {
-    var _a;
+});
+exports.createWishlist = createWishlist;
+const addToWishlist = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
     const wishlistApi = getWishlistApi(request, actionContext);
-    const wishlist = await fetchWishlist(request, wishlistApi);
+    const wishlist = yield fetchWishlist(request, wishlistApi);
     const body = JSON.parse(request.body);
-    const updatedWishlist = await wishlistApi.addToWishlist(wishlist, {
-        sku: ((_a = body === null || body === void 0 ? void 0 : body.variant) === null || _a === void 0 ? void 0 : _a.sku) || undefined,
+    const updatedWishlist = yield wishlistApi.addToWishlist(wishlist, {
+        sku: ((_b = body === null || body === void 0 ? void 0 : body.variant) === null || _b === void 0 ? void 0 : _b.sku) || undefined,
         count: body.count || 1,
     });
     return {
@@ -107,29 +125,32 @@ export const addToWishlist = async (request, actionContext) => {
         body: JSON.stringify(updatedWishlist),
         sessionData: request.sessionData,
     };
-};
-export const removeLineItem = async (request, actionContext) => {
-    var _a, _b;
+});
+exports.addToWishlist = addToWishlist;
+const removeLineItem = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c, _d;
     const wishlistApi = getWishlistApi(request, actionContext);
-    const wishlist = await fetchWishlist(request, wishlistApi);
+    const wishlist = yield fetchWishlist(request, wishlistApi);
     const body = JSON.parse(request.body);
-    const updatedWishlist = await wishlistApi.removeLineItem(wishlist, (_b = (_a = body.lineItem) === null || _a === void 0 ? void 0 : _a.id) !== null && _b !== void 0 ? _b : undefined);
+    const updatedWishlist = yield wishlistApi.removeLineItem(wishlist, (_d = (_c = body.lineItem) === null || _c === void 0 ? void 0 : _c.id) !== null && _d !== void 0 ? _d : undefined);
     return {
         statusCode: 200,
         body: JSON.stringify(updatedWishlist),
         sessionData: request.sessionData,
     };
-};
-export const updateLineItemCount = async (request, actionContext) => {
-    var _a, _b;
+});
+exports.removeLineItem = removeLineItem;
+const updateLineItemCount = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
+    var _e, _f;
     const wishlistApi = getWishlistApi(request, actionContext);
-    const wishlist = await fetchWishlist(request, wishlistApi);
+    const wishlist = yield fetchWishlist(request, wishlistApi);
     const body = JSON.parse(request.body);
-    const updatedWishlist = await wishlistApi.updateLineItemCount(wishlist, (_b = (_a = body.lineItem) === null || _a === void 0 ? void 0 : _a.id) !== null && _b !== void 0 ? _b : undefined, body.count || 1);
+    const updatedWishlist = yield wishlistApi.updateLineItemCount(wishlist, (_f = (_e = body.lineItem) === null || _e === void 0 ? void 0 : _e.id) !== null && _f !== void 0 ? _f : undefined, body.count || 1);
     return {
         statusCode: 200,
         body: JSON.stringify(updatedWishlist),
         sessionData: request.sessionData,
     };
-};
+});
+exports.updateLineItemCount = updateLineItemCount;
 //# sourceMappingURL=WishlistController.js.map

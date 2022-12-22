@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-        "module": "esnext",
-        "target": "es2019",
+        "module": "CommonJS",
+        "target": "ES6",
         "lib": [
             "es2019",
         ],
@@ -25,7 +25,7 @@
         "typeRoots": [
             "node_modules/@types",
             "node_modules/@commercetools/platform-sdk/dist/declarations/src/index.d.ts",
-            "node_modules/@b2bdemo/types/build"
+            "node_modules/@b2bdemo/types/build/**/*"
         ],
         "types": [
             "node",
@@ -42,7 +42,6 @@
         "./*"
     ],
     "exclude": [
-        "node_modules/*",
         "build",
         "webpack",
         "jest.config.js",

@@ -1,6 +1,6 @@
 import { ActionContext, Request, Response } from '@frontastic/extension-types';
 import { AccountRegisterBody } from './AccountController';
-import { Store } from '@Types/store/store';
+import { Store } from '../../../node_modules/@b2bdemo/types/build/store/store';
 declare type ActionHook = (request: Request, actionContext: ActionContext) => Promise<Response>;
 export interface BusinessUnitRequestBody {
     account: AccountRegisterBody;

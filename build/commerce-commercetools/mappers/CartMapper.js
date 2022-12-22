@@ -1,7 +1,11 @@
-import { ProductRouter } from '../utils/ProductRouter';
-import { ProductMapper } from './ProductMapper';
-export class CartMapper {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CartMapper = void 0;
+const ProductRouter_1 = require("../utils/ProductRouter");
+const ProductMapper_1 = require("./ProductMapper");
+class CartMapper {
 }
+exports.CartMapper = CartMapper;
 CartMapper.commercetoolsCartToCart = (commercetoolsCart, locale, config) => {
     var _a, _b, _c;
     return {
@@ -9,7 +13,7 @@ CartMapper.commercetoolsCartToCart = (commercetoolsCart, locale, config) => {
         cartVersion: commercetoolsCart.version.toString(),
         lineItems: CartMapper.commercetoolsLineItemsToLineItems(commercetoolsCart.lineItems, locale),
         email: commercetoolsCart === null || commercetoolsCart === void 0 ? void 0 : commercetoolsCart.customerEmail,
-        sum: ProductMapper.commercetoolsMoneyToMoney(commercetoolsCart.totalPrice),
+        sum: ProductMapper_1.ProductMapper.commercetoolsMoneyToMoney(commercetoolsCart.totalPrice),
         shippingAddress: CartMapper.commercetoolsAddressToAddress(commercetoolsCart.shippingAddress),
         billingAddress: CartMapper.commercetoolsAddressToAddress(commercetoolsCart.billingAddress),
         shippingInfo: CartMapper.commercetoolsShippingInfoToShippingInfo(commercetoolsCart.shippingInfo, locale),
@@ -31,16 +35,16 @@ CartMapper.commercetoolsLineItemsToLineItems = (commercetoolsLineItems, locale) 
             name: (commercetoolsLineItem === null || commercetoolsLineItem === void 0 ? void 0 : commercetoolsLineItem.name[locale.language]) || '',
             type: 'variant',
             count: commercetoolsLineItem.quantity,
-            price: ProductMapper.commercetoolsMoneyToMoney((_a = commercetoolsLineItem.price) === null || _a === void 0 ? void 0 : _a.value),
-            discountedPrice: ProductMapper.commercetoolsMoneyToMoney((_c = (_b = commercetoolsLineItem.price) === null || _b === void 0 ? void 0 : _b.discounted) === null || _c === void 0 ? void 0 : _c.value),
+            price: ProductMapper_1.ProductMapper.commercetoolsMoneyToMoney((_a = commercetoolsLineItem.price) === null || _a === void 0 ? void 0 : _a.value),
+            discountedPrice: ProductMapper_1.ProductMapper.commercetoolsMoneyToMoney((_c = (_b = commercetoolsLineItem.price) === null || _b === void 0 ? void 0 : _b.discounted) === null || _c === void 0 ? void 0 : _c.value),
             discountTexts: CartMapper.commercetoolsDiscountedPricesPerQuantityToDiscountTexts(commercetoolsLineItem.discountedPricePerQuantity, locale),
             discounts: CartMapper.commercetoolsDiscountedPricesPerQuantityToDiscounts(commercetoolsLineItem.discountedPricePerQuantity, locale),
-            totalPrice: ProductMapper.commercetoolsMoneyToMoney(commercetoolsLineItem.totalPrice),
-            variant: ProductMapper.commercetoolsProductVariantToVariant(commercetoolsLineItem.variant, locale, commercetoolsLineItem.price),
+            totalPrice: ProductMapper_1.ProductMapper.commercetoolsMoneyToMoney(commercetoolsLineItem.totalPrice),
+            variant: ProductMapper_1.ProductMapper.commercetoolsProductVariantToVariant(commercetoolsLineItem.variant, locale, commercetoolsLineItem.price),
             isGift: (commercetoolsLineItem === null || commercetoolsLineItem === void 0 ? void 0 : commercetoolsLineItem.lineItemMode) !== undefined && commercetoolsLineItem.lineItemMode === 'GiftLineItem',
             shippingDetails: commercetoolsLineItem.shippingDetails,
         };
-        item._url = ProductRouter.generateUrlFor(item);
+        item._url = ProductRouter_1.ProductRouter.generateUrlFor(item);
         lineItems.push(item);
     });
     return lineItems;
@@ -90,7 +94,7 @@ CartMapper.commercetoolsOrderToOrder = (commercetoolsOrder, locale, config) => {
         email: commercetoolsOrder === null || commercetoolsOrder === void 0 ? void 0 : commercetoolsOrder.customerEmail,
         shippingAddress: CartMapper.commercetoolsAddressToAddress(commercetoolsOrder.shippingAddress),
         billingAddress: CartMapper.commercetoolsAddressToAddress(commercetoolsOrder.billingAddress),
-        sum: ProductMapper.commercetoolsMoneyToMoney(commercetoolsOrder.totalPrice),
+        sum: ProductMapper_1.ProductMapper.commercetoolsMoneyToMoney(commercetoolsOrder.totalPrice),
         businessUnit: (_a = commercetoolsOrder.businessUnit) === null || _a === void 0 ? void 0 : _a.key,
         createdAt: commercetoolsOrder.createdAt,
         shippingInfo: CartMapper.commercetoolsShippingInfoToShippingInfo(commercetoolsOrder.shippingInfo, locale),
@@ -107,14 +111,9 @@ CartMapper.commercetoolsShippingInfoToShippingInfo = (commercetoolsShippingInfo,
         shippingMethodId: (_a = commercetoolsShippingInfo === null || commercetoolsShippingInfo === void 0 ? void 0 : commercetoolsShippingInfo.shippingMethod) === null || _a === void 0 ? void 0 : _a.id,
     };
     if (commercetoolsShippingInfo.shippingMethod.obj) {
-        shippingMethod = {
-            ...CartMapper.commercetoolsShippingMethodToShippingMethod(commercetoolsShippingInfo.shippingMethod.obj, locale),
-        };
+        shippingMethod = Object.assign({}, CartMapper.commercetoolsShippingMethodToShippingMethod(commercetoolsShippingInfo.shippingMethod.obj, locale));
     }
-    return {
-        ...shippingMethod,
-        price: ProductMapper.commercetoolsMoneyToMoney(commercetoolsShippingInfo.price),
-    };
+    return Object.assign(Object.assign({}, shippingMethod), { price: ProductMapper_1.ProductMapper.commercetoolsMoneyToMoney(commercetoolsShippingInfo.price) });
 };
 CartMapper.commercetoolsReturnInfoToReturnInfo = (commercetoolsReturnInfo) => {
     return commercetoolsReturnInfo.map((ctReturnInfo) => ({
@@ -167,7 +166,7 @@ CartMapper.commercetoolsZoneRatesToRates = (commercetoolsZoneRates, locale) => {
                 shippingRateId: shippingRateId,
                 name: name,
                 locations: locations,
-                price: ProductMapper.commercetoolsMoneyToMoney(matchingShippingRates.price),
+                price: ProductMapper_1.ProductMapper.commercetoolsMoneyToMoney(matchingShippingRates.price),
             });
         });
     });
@@ -190,7 +189,7 @@ CartMapper.commercetoolsPaymentToPayment = (commercetoolsPayment, locale) => {
         paymentId: (_b = commercetoolsPayment.interfaceId) !== null && _b !== void 0 ? _b : null,
         paymentProvider: (_c = commercetoolsPayment.paymentMethodInfo.paymentInterface) !== null && _c !== void 0 ? _c : null,
         paymentMethod: (_d = commercetoolsPayment.paymentMethodInfo.method) !== null && _d !== void 0 ? _d : null,
-        amountPlanned: ProductMapper.commercetoolsMoneyToMoney(commercetoolsPayment.amountPlanned),
+        amountPlanned: ProductMapper_1.ProductMapper.commercetoolsMoneyToMoney(commercetoolsPayment.amountPlanned),
         debug: JSON.stringify(commercetoolsPayment),
         paymentStatus: (_e = commercetoolsPayment.paymentStatus.interfaceCode) !== null && _e !== void 0 ? _e : null,
         version: (_f = commercetoolsPayment.version) !== null && _f !== void 0 ? _f : 0,
@@ -210,13 +209,7 @@ CartMapper.commercetoolsDiscountCodeInfoToDiscountCode = (commercetoolsDiscountC
     };
     if (commercetoolsDiscountCodeInfo.discountCode.obj) {
         const commercetoolsDiscountCode = commercetoolsDiscountCodeInfo.discountCode.obj;
-        discount = {
-            ...discount,
-            discountId: commercetoolsDiscountCode.id,
-            code: commercetoolsDiscountCode.code,
-            name: (_a = commercetoolsDiscountCode.name[locale.language]) !== null && _a !== void 0 ? _a : undefined,
-            description: (_b = commercetoolsDiscountCode.description[locale.language]) !== null && _b !== void 0 ? _b : undefined,
-        };
+        discount = Object.assign(Object.assign({}, discount), { discountId: commercetoolsDiscountCode.id, code: commercetoolsDiscountCode.code, name: (_a = commercetoolsDiscountCode.name[locale.language]) !== null && _a !== void 0 ? _a : undefined, description: (_b = commercetoolsDiscountCode.description[locale.language]) !== null && _b !== void 0 ? _b : undefined });
     }
     return discount;
 };
@@ -242,16 +235,11 @@ CartMapper.commercetoolsDiscountedPricesPerQuantityToDiscounts = (commercetoolsD
 CartMapper.commercetoolsDiscountedLineItemPortionToDiscount = (commercetoolsDiscountedLineItemPortion, locale) => {
     var _a, _b;
     let discount = {
-        discountedAmount: ProductMapper.commercetoolsMoneyToMoney(commercetoolsDiscountedLineItemPortion.discountedAmount),
+        discountedAmount: ProductMapper_1.ProductMapper.commercetoolsMoneyToMoney(commercetoolsDiscountedLineItemPortion.discountedAmount),
     };
     if (commercetoolsDiscountedLineItemPortion.discount.obj) {
         const commercetoolsCartDiscount = commercetoolsDiscountedLineItemPortion.discount.obj;
-        discount = {
-            ...discount,
-            discountId: commercetoolsCartDiscount.id,
-            name: (_a = commercetoolsCartDiscount.name[locale.language]) !== null && _a !== void 0 ? _a : undefined,
-            description: (_b = commercetoolsCartDiscount.description[locale.language]) !== null && _b !== void 0 ? _b : undefined,
-        };
+        discount = Object.assign(Object.assign({}, discount), { discountId: commercetoolsCartDiscount.id, name: (_a = commercetoolsCartDiscount.name[locale.language]) !== null && _a !== void 0 ? _a : undefined, description: (_b = commercetoolsCartDiscount.description[locale.language]) !== null && _b !== void 0 ? _b : undefined });
     }
     return discount;
 };
@@ -260,10 +248,10 @@ CartMapper.commercetoolsTaxedPriceToTaxed = (commercetoolsTaxedPrice, locale) =>
         return undefined;
     }
     return {
-        amount: ProductMapper.commercetoolsMoneyToMoney(commercetoolsTaxedPrice.totalNet),
+        amount: ProductMapper_1.ProductMapper.commercetoolsMoneyToMoney(commercetoolsTaxedPrice.totalNet),
         taxPortions: commercetoolsTaxedPrice.taxPortions.map((commercetoolsTaxPortion) => {
             const taxPortion = {
-                amount: ProductMapper.commercetoolsMoneyToMoney(commercetoolsTaxPortion.amount),
+                amount: ProductMapper_1.ProductMapper.commercetoolsMoneyToMoney(commercetoolsTaxPortion.amount),
                 name: commercetoolsTaxPortion.name,
                 rate: commercetoolsTaxPortion.rate,
             };

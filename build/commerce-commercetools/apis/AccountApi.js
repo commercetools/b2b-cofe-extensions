@@ -1,12 +1,24 @@
-import { BaseApi } from './BaseApi';
-import { AccountMapper } from '../mappers/AccontMapper';
-import { Guid } from '../utils/Guid';
-export class AccountApi extends BaseApi {
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AccountApi = void 0;
+const BaseApi_1 = require("./BaseApi");
+const AccontMapper_1 = require("../mappers/AccontMapper");
+const Guid_1 = require("../utils/Guid");
+class AccountApi extends BaseApi_1.BaseApi {
     constructor() {
         super(...arguments);
-        this.create = async (account, cart) => {
+        this.create = (account, cart) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const { commercetoolsAddresses, billingAddresses, shippingAddresses, defaultBillingAddress, defaultShippingAddress, } = this.extractAddresses(account);
                 const customerDraft = {
                     email: account.email,
@@ -31,14 +43,14 @@ export class AccountApi extends BaseApi {
                         }
                         : undefined,
                 };
-                account = await this.getApiForProject()
+                account = yield this.getApiForProject()
                     .customers()
                     .post({
                     body: customerDraft,
                 })
                     .execute()
                     .then((response) => {
-                    return AccountMapper.commercetoolsCustomerToAccount(response.body.customer, locale);
+                    return AccontMapper_1.AccountMapper.commercetoolsCustomerToAccount(response.body.customer, locale);
                 })
                     .catch((error) => {
                     var _a, _b, _c;
@@ -52,7 +64,7 @@ export class AccountApi extends BaseApi {
                     }
                     throw error;
                 });
-                const token = await this.generateToken(account);
+                const token = yield this.generateToken(account);
                 if (token) {
                     account.confirmationToken = token.value;
                     account.tokenValidUntil = new Date(token.expiresAt);
@@ -62,9 +74,9 @@ export class AccountApi extends BaseApi {
             catch (error) {
                 throw error;
             }
-        };
-        this.generateToken = async (account) => {
-            const token = await this.getApiForProject()
+        });
+        this.generateToken = (account) => __awaiter(this, void 0, void 0, function* () {
+            const token = yield this.getApiForProject()
                 .customers()
                 .emailToken()
                 .post({
@@ -75,11 +87,11 @@ export class AccountApi extends BaseApi {
             })
                 .execute();
             return token.body;
-        };
-        this.confirmEmail = async (token) => {
+        });
+        this.confirmEmail = (token) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                return await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                return yield this.getApiForProject()
                     .customers()
                     .emailConfirm()
                     .post({
@@ -89,7 +101,7 @@ export class AccountApi extends BaseApi {
                 })
                     .execute()
                     .then((response) => {
-                    return AccountMapper.commercetoolsCustomerToAccount(response.body, locale);
+                    return AccontMapper_1.AccountMapper.commercetoolsCustomerToAccount(response.body, locale);
                 })
                     .catch((error) => {
                     throw new Error(`Failed to confirm email with token ${token}. ${error}`);
@@ -98,11 +110,11 @@ export class AccountApi extends BaseApi {
             catch (error) {
                 throw new Error(`Confirm email failed. ${error}`);
             }
-        };
-        this.login = async (account, cart, reverify = false) => {
+        });
+        this.login = (account, cart, reverify = false) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                account = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                account = yield this.getApiForProject()
                     .login()
                     .post({
                     body: {
@@ -118,7 +130,7 @@ export class AccountApi extends BaseApi {
                 })
                     .execute()
                     .then((response) => {
-                    return AccountMapper.commercetoolsCustomerToAccount(response.body.customer, locale);
+                    return AccontMapper_1.AccountMapper.commercetoolsCustomerToAccount(response.body.customer, locale);
                 })
                     .catch((error) => {
                     var _a, _b, _c;
@@ -133,7 +145,7 @@ export class AccountApi extends BaseApi {
                     throw new Error(`Failed to login account  ${account.email}.`);
                 });
                 if (reverify) {
-                    const token = await this.generateToken(account);
+                    const token = yield this.generateToken(account);
                     account.confirmationToken = token.value;
                     account.tokenValidUntil = new Date(token.expiresAt);
                 }
@@ -145,12 +157,12 @@ export class AccountApi extends BaseApi {
             catch (error) {
                 throw error;
             }
-        };
-        this.updatePassword = async (account, oldPassword, newPassword) => {
+        });
+        this.updatePassword = (account, oldPassword, newPassword) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const accountVersion = await this.fetchAccountVersion(account);
-                account = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const accountVersion = yield this.fetchAccountVersion(account);
+                account = yield this.getApiForProject()
                     .customers()
                     .password()
                     .post({
@@ -163,7 +175,7 @@ export class AccountApi extends BaseApi {
                 })
                     .execute()
                     .then((response) => {
-                    return AccountMapper.commercetoolsCustomerToAccount(response.body, locale);
+                    return AccontMapper_1.AccountMapper.commercetoolsCustomerToAccount(response.body, locale);
                 })
                     .catch((error) => {
                     throw new Error(`Failed to update password for account ${account.email}. ${error}`);
@@ -173,10 +185,10 @@ export class AccountApi extends BaseApi {
             catch (error) {
                 throw new Error(`updateAccount failed. ${error}`);
             }
-        };
-        this.generatePasswordResetToken = async (email) => {
+        });
+        this.generatePasswordResetToken = (email) => __awaiter(this, void 0, void 0, function* () {
             try {
-                return await this.getApiForProject()
+                return yield this.getApiForProject()
                     .customers()
                     .passwordToken()
                     .post({
@@ -200,11 +212,11 @@ export class AccountApi extends BaseApi {
             catch (error) {
                 throw new Error(`generatePasswordResetToken failed. ${error}`);
             }
-        };
-        this.resetPassword = async (token, newPassword) => {
+        });
+        this.resetPassword = (token, newPassword) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                return await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                return yield this.getApiForProject()
                     .customers()
                     .passwordReset()
                     .post({
@@ -215,7 +227,7 @@ export class AccountApi extends BaseApi {
                 })
                     .execute()
                     .then((response) => {
-                    return AccountMapper.commercetoolsCustomerToAccount(response.body, locale);
+                    return AccontMapper_1.AccountMapper.commercetoolsCustomerToAccount(response.body, locale);
                 })
                     .catch((error) => {
                     throw new Error(`Failed to reset password with token ${token}. ${error}`);
@@ -224,8 +236,8 @@ export class AccountApi extends BaseApi {
             catch (error) {
                 throw new Error(`resetPassword failed. ${error}`);
             }
-        };
-        this.update = async (account) => {
+        });
+        this.update = (account) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const customerUpdateActions = [];
                 if (account.firstName) {
@@ -243,27 +255,21 @@ export class AccountApi extends BaseApi {
                         dateOfBirth: account.birthday.getFullYear() + '-' + account.birthday.getMonth() + '-' + account.birthday.getDate(),
                     });
                 }
-                return await this.updateAccount(account, customerUpdateActions);
+                return yield this.updateAccount(account, customerUpdateActions);
             }
             catch (error) {
                 throw new Error(`update failed. ${error}`);
             }
-        };
-        this.addAddress = async (account, address) => {
+        });
+        this.addAddress = (account, address) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const customerUpdateActions = [];
-                let addressData = AccountMapper.addressToCommercetoolsAddress(address);
+                let addressData = AccontMapper_1.AccountMapper.addressToCommercetoolsAddress(address);
                 if (addressData.id !== undefined) {
-                    addressData = {
-                        ...addressData,
-                        id: undefined,
-                    };
+                    addressData = Object.assign(Object.assign({}, addressData), { id: undefined });
                 }
                 if (address.isDefaultBillingAddress || address.isDefaultShippingAddress) {
-                    addressData = {
-                        ...addressData,
-                        key: Guid.newGuid(),
-                    };
+                    addressData = Object.assign(Object.assign({}, addressData), { key: Guid_1.Guid.newGuid() });
                 }
                 customerUpdateActions.push({ action: 'addAddress', address: addressData });
                 if (address.isDefaultBillingAddress) {
@@ -272,27 +278,21 @@ export class AccountApi extends BaseApi {
                 if (address.isDefaultShippingAddress) {
                     customerUpdateActions.push({ action: 'setDefaultShippingAddress', addressKey: addressData.key });
                 }
-                return await this.updateAccount(account, customerUpdateActions);
+                return yield this.updateAccount(account, customerUpdateActions);
             }
             catch (error) {
                 throw new Error(`addAddress failed. ${error}`);
             }
-        };
-        this.updateAddress = async (account, address) => {
+        });
+        this.updateAddress = (account, address) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const customerUpdateActions = [];
-                let addressData = AccountMapper.addressToCommercetoolsAddress(address);
+                let addressData = AccontMapper_1.AccountMapper.addressToCommercetoolsAddress(address);
                 if (addressData.id !== undefined) {
-                    addressData = {
-                        ...addressData,
-                        id: undefined,
-                    };
+                    addressData = Object.assign(Object.assign({}, addressData), { id: undefined });
                 }
                 if (address.isDefaultBillingAddress || address.isDefaultShippingAddress) {
-                    addressData = {
-                        ...addressData,
-                        key: Guid.newGuid(),
-                    };
+                    addressData = Object.assign(Object.assign({}, addressData), { key: Guid_1.Guid.newGuid() });
                 }
                 customerUpdateActions.push({ action: 'changeAddress', addressId: address.addressId, address: addressData });
                 if (address.isDefaultBillingAddress) {
@@ -301,48 +301,48 @@ export class AccountApi extends BaseApi {
                 if (address.isDefaultShippingAddress) {
                     customerUpdateActions.push({ action: 'setDefaultShippingAddress', addressKey: addressData.key });
                 }
-                return await this.updateAccount(account, customerUpdateActions);
+                return yield this.updateAccount(account, customerUpdateActions);
             }
             catch (error) {
                 throw new Error(`updateAddress failed. ${error}`);
             }
-        };
-        this.removeAddress = async (account, address) => {
+        });
+        this.removeAddress = (account, address) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const customerUpdateActions = [];
-                const addressData = AccountMapper.addressToCommercetoolsAddress(address);
+                const addressData = AccontMapper_1.AccountMapper.addressToCommercetoolsAddress(address);
                 if (addressData.id === undefined) {
                     throw new Error(`The address passed doesn't contain an id.`);
                 }
                 customerUpdateActions.push({ action: 'removeAddress', addressId: address.addressId });
-                return await this.updateAccount(account, customerUpdateActions);
+                return yield this.updateAccount(account, customerUpdateActions);
             }
             catch (error) {
                 throw new Error(`removeAddress failed. ${error}`);
             }
-        };
-        this.setDefaultBillingAddress = async (account, address) => {
+        });
+        this.setDefaultBillingAddress = (account, address) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const customerUpdateActions = [];
-                const addressData = AccountMapper.addressToCommercetoolsAddress(address);
+                const addressData = AccontMapper_1.AccountMapper.addressToCommercetoolsAddress(address);
                 customerUpdateActions.push({ action: 'setDefaultBillingAddress', addressId: addressData.id });
-                return await this.updateAccount(account, customerUpdateActions);
+                return yield this.updateAccount(account, customerUpdateActions);
             }
             catch (error) {
                 throw new Error(`setDefaultBillingAddress failed. ${error}`);
             }
-        };
-        this.setDefaultShippingAddress = async (account, address) => {
+        });
+        this.setDefaultShippingAddress = (account, address) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const customerUpdateActions = [];
-                const addressData = AccountMapper.addressToCommercetoolsAddress(address);
+                const addressData = AccontMapper_1.AccountMapper.addressToCommercetoolsAddress(address);
                 customerUpdateActions.push({ action: 'setDefaultShippingAddress', addressId: addressData.id });
-                return await this.updateAccount(account, customerUpdateActions);
+                return yield this.updateAccount(account, customerUpdateActions);
             }
             catch (error) {
                 throw new Error(`setDefaultShippingAddress failed. ${error}`);
             }
-        };
+        });
     }
     extractAddresses(account) {
         const commercetoolsAddresses = [];
@@ -351,7 +351,7 @@ export class AccountApi extends BaseApi {
         let defaultBillingAddress;
         let defaultShippingAddress;
         account.addresses.forEach((address, key) => {
-            const addressData = AccountMapper.addressToCommercetoolsAddress(address);
+            const addressData = AccontMapper_1.AccountMapper.addressToCommercetoolsAddress(address);
             commercetoolsAddresses.push(addressData);
             if (address.isDefaultBillingAddress) {
                 billingAddresses.push(key);
@@ -370,35 +370,40 @@ export class AccountApi extends BaseApi {
             defaultShippingAddress,
         };
     }
-    async fetchAccountVersion(account) {
+    fetchAccountVersion(account) {
         var _a;
-        const commercetoolsAccount = await this.getApiForProject()
-            .customers()
-            .withId({ ID: account.accountId })
-            .get()
-            .execute();
-        return (_a = commercetoolsAccount.body) === null || _a === void 0 ? void 0 : _a.version;
+        return __awaiter(this, void 0, void 0, function* () {
+            const commercetoolsAccount = yield this.getApiForProject()
+                .customers()
+                .withId({ ID: account.accountId })
+                .get()
+                .execute();
+            return (_a = commercetoolsAccount.body) === null || _a === void 0 ? void 0 : _a.version;
+        });
     }
-    async updateAccount(account, customerUpdateActions) {
-        const locale = await this.getCommercetoolsLocal();
-        const accountVersion = await this.fetchAccountVersion(account);
-        const customerUpdate = {
-            version: accountVersion,
-            actions: customerUpdateActions,
-        };
-        return await this.getApiForProject()
-            .customers()
-            .withId({ ID: account.accountId })
-            .post({
-            body: customerUpdate,
-        })
-            .execute()
-            .then((response) => {
-            return AccountMapper.commercetoolsCustomerToAccount(response.body, locale);
-        })
-            .catch((error) => {
-            throw error;
+    updateAccount(account, customerUpdateActions) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const locale = yield this.getCommercetoolsLocal();
+            const accountVersion = yield this.fetchAccountVersion(account);
+            const customerUpdate = {
+                version: accountVersion,
+                actions: customerUpdateActions,
+            };
+            return yield this.getApiForProject()
+                .customers()
+                .withId({ ID: account.accountId })
+                .post({
+                body: customerUpdate,
+            })
+                .execute()
+                .then((response) => {
+                return AccontMapper_1.AccountMapper.commercetoolsCustomerToAccount(response.body, locale);
+            })
+                .catch((error) => {
+                throw error;
+            });
         });
     }
 }
+exports.AccountApi = AccountApi;
 //# sourceMappingURL=AccountApi.js.map

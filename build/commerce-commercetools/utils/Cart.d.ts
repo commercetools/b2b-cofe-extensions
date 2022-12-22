@@ -1,4 +1,4 @@
-import { Cart } from '@Types/cart/Cart';
+import { Cart } from '../../../node_modules/@b2bdemo/types/build/cart/Cart';
 export declare const hasUser: (cart: Cart) => boolean;
 export declare const hasShippingAddress: (cart: Cart) => boolean;
 export declare const hasBillingAddress: (cart: Cart) => boolean;

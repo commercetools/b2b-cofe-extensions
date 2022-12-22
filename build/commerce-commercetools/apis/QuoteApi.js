@@ -1,16 +1,26 @@
-import { mapCommercetoolsQuote, mapCommercetoolsQuoteRequest, mapCommercetoolsStagedQuote, } from '../mappers/QuoteMappers';
-import { BaseApi } from './BaseApi';
-export class QuoteApi extends BaseApi {
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.QuoteApi = void 0;
+const QuoteMappers_1 = require("../mappers/QuoteMappers");
+const BaseApi_1 = require("./BaseApi");
+class QuoteApi extends BaseApi_1.BaseApi {
     constructor() {
         super(...arguments);
-        this.createQuoteRequest = async (quoteRequest) => {
+        this.createQuoteRequest = (quoteRequest) => __awaiter(this, void 0, void 0, function* () {
             try {
                 return this.getApiForProject()
                     .quoteRequests()
                     .post({
-                    body: {
-                        ...quoteRequest,
-                    },
+                    body: Object.assign({}, quoteRequest),
                 })
                     .execute()
                     .then((response) => {
@@ -20,11 +30,11 @@ export class QuoteApi extends BaseApi {
                     throw error;
                 });
             }
-            catch {
+            catch (_a) {
                 throw '';
             }
-        };
-        this.getStagedQuote = async (ID) => {
+        });
+        this.getStagedQuote = (ID) => __awaiter(this, void 0, void 0, function* () {
             try {
                 return this.getApiForProject()
                     .stagedQuotes()
@@ -43,11 +53,11 @@ export class QuoteApi extends BaseApi {
                     throw error;
                 });
             }
-            catch {
+            catch (_b) {
                 throw '';
             }
-        };
-        this.getQuote = async (ID) => {
+        });
+        this.getQuote = (ID) => __awaiter(this, void 0, void 0, function* () {
             try {
                 return this.getApiForProject()
                     .quotes()
@@ -61,13 +71,13 @@ export class QuoteApi extends BaseApi {
                     throw error;
                 });
             }
-            catch {
+            catch (_c) {
                 throw '';
             }
-        };
-        this.getQuoteRequestsByCustomer = async (customerId) => {
+        });
+        this.getQuoteRequestsByCustomer = (customerId) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 return this.getApiForProject()
                     .quoteRequests()
                     .get({
@@ -80,18 +90,18 @@ export class QuoteApi extends BaseApi {
                 })
                     .execute()
                     .then((response) => {
-                    return mapCommercetoolsQuoteRequest(response.body.results, locale);
+                    return (0, QuoteMappers_1.mapCommercetoolsQuoteRequest)(response.body.results, locale);
                 })
                     .catch((error) => {
                     throw error;
                 });
             }
-            catch {
+            catch (_d) {
                 throw '';
             }
-        };
-        this.getStagedQuotesByCustomer = async (customerId) => {
-            const locale = await this.getCommercetoolsLocal();
+        });
+        this.getStagedQuotesByCustomer = (customerId) => __awaiter(this, void 0, void 0, function* () {
+            const locale = yield this.getCommercetoolsLocal();
             try {
                 return this.getApiForProject()
                     .stagedQuotes()
@@ -105,18 +115,18 @@ export class QuoteApi extends BaseApi {
                 })
                     .execute()
                     .then((response) => {
-                    return mapCommercetoolsStagedQuote(response.body.results, locale);
+                    return (0, QuoteMappers_1.mapCommercetoolsStagedQuote)(response.body.results, locale);
                 })
                     .catch((error) => {
                     throw error;
                 });
             }
-            catch {
+            catch (_e) {
                 throw '';
             }
-        };
-        this.getQuotesByCustomer = async (customerId) => {
-            const locale = await this.getCommercetoolsLocal();
+        });
+        this.getQuotesByCustomer = (customerId) => __awaiter(this, void 0, void 0, function* () {
+            const locale = yield this.getCommercetoolsLocal();
             try {
                 return this.getApiForProject()
                     .quotes()
@@ -130,18 +140,18 @@ export class QuoteApi extends BaseApi {
                 })
                     .execute()
                     .then((response) => {
-                    return mapCommercetoolsQuote(response.body.results, locale);
+                    return (0, QuoteMappers_1.mapCommercetoolsQuote)(response.body.results, locale);
                 })
                     .catch((error) => {
                     throw error;
                 });
             }
-            catch {
+            catch (_f) {
                 throw '';
             }
-        };
-        this.getQuoteRequestsByBusinessUnit = async (businessUnitKeys) => {
-            const locale = await this.getCommercetoolsLocal();
+        });
+        this.getQuoteRequestsByBusinessUnit = (businessUnitKeys) => __awaiter(this, void 0, void 0, function* () {
+            const locale = yield this.getCommercetoolsLocal();
             try {
                 return this.getApiForProject()
                     .quoteRequests()
@@ -155,18 +165,18 @@ export class QuoteApi extends BaseApi {
                 })
                     .execute()
                     .then((response) => {
-                    return mapCommercetoolsQuoteRequest(response.body.results, locale);
+                    return (0, QuoteMappers_1.mapCommercetoolsQuoteRequest)(response.body.results, locale);
                 })
                     .catch((error) => {
                     throw error;
                 });
             }
-            catch {
+            catch (_g) {
                 throw '';
             }
-        };
-        this.getStagedQuotesByBusinessUnit = async (businessUnitKeys) => {
-            const locale = await this.getCommercetoolsLocal();
+        });
+        this.getStagedQuotesByBusinessUnit = (businessUnitKeys) => __awaiter(this, void 0, void 0, function* () {
+            const locale = yield this.getCommercetoolsLocal();
             try {
                 return this.getApiForProject()
                     .stagedQuotes()
@@ -180,18 +190,18 @@ export class QuoteApi extends BaseApi {
                 })
                     .execute()
                     .then((response) => {
-                    return mapCommercetoolsStagedQuote(response.body.results, locale);
+                    return (0, QuoteMappers_1.mapCommercetoolsStagedQuote)(response.body.results, locale);
                 })
                     .catch((error) => {
                     throw error;
                 });
             }
-            catch {
+            catch (_h) {
                 throw '';
             }
-        };
-        this.getQuotesByBusinessUnit = async (businessUnitKeys) => {
-            const locale = await this.getCommercetoolsLocal();
+        });
+        this.getQuotesByBusinessUnit = (businessUnitKeys) => __awaiter(this, void 0, void 0, function* () {
+            const locale = yield this.getCommercetoolsLocal();
             try {
                 return this.getApiForProject()
                     .quotes()
@@ -205,17 +215,17 @@ export class QuoteApi extends BaseApi {
                 })
                     .execute()
                     .then((response) => {
-                    return mapCommercetoolsQuote(response.body.results, locale);
+                    return (0, QuoteMappers_1.mapCommercetoolsQuote)(response.body.results, locale);
                 })
                     .catch((error) => {
                     throw error;
                 });
             }
-            catch {
+            catch (_j) {
                 throw '';
             }
-        };
-        this.updateQuoteState = async (ID, quoteState) => {
+        });
+        this.updateQuoteState = (ID, quoteState) => __awaiter(this, void 0, void 0, function* () {
             try {
                 return this.getQuote(ID).then((quote) => {
                     return this.getApiForProject()
@@ -241,10 +251,11 @@ export class QuoteApi extends BaseApi {
                     });
                 });
             }
-            catch {
+            catch (_k) {
                 throw '';
             }
-        };
+        });
     }
 }
+exports.QuoteApi = QuoteApi;
 //# sourceMappingURL=QuoteApi.js.map

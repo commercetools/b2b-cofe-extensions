@@ -1,8 +1,8 @@
 import { CustomerReference, LineItem as CommercetoolsLineItem, QuoteRequest as CommercetoolsQuoteRequest, StagedQuote as CommercetoolsStagedQuote, Quote as CommercetoolsQuote, CartReference } from '@commercetools/platform-sdk';
 import { Locale } from 'commerce-commercetools/Locale';
-import { LineItem } from '@Types/cart/LineItem';
-import { QuoteRequest } from '@Types/quotes/QuoteRequest';
-import { Cart } from '@Types/cart/Cart';
+import { LineItem } from '../../../node_modules/@b2bdemo/types/build/cart/LineItem';
+import { QuoteRequest } from '../../../node_modules/@b2bdemo/types/build/quotes/QuoteRequest';
+import { Cart } from '../../../node_modules/@b2bdemo/types/build/cart/Cart';
 export declare const mapCommercetoolsQuoteRequest: (results: CommercetoolsQuoteRequest[], locale: Locale) => QuoteRequest[];
 export declare const mapCommercetoolsQuote: (results: CommercetoolsQuote[], locale: Locale) => any[];
 export declare const mapCommercetoolsStagedQuote: (results: CommercetoolsStagedQuote[], locale: Locale) => any[];

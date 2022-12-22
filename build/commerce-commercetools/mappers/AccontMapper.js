@@ -1,5 +1,9 @@
-export class AccountMapper {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AccountMapper = void 0;
+class AccountMapper {
 }
+exports.AccountMapper = AccountMapper;
 AccountMapper.commercetoolsCustomerToAccount = (commercetoolsCustomer, locale) => {
     return {
         accountId: commercetoolsCustomer.id,

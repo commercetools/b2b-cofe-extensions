@@ -1,14 +1,17 @@
-import * as AccountActions from './AccountController';
-import * as ProductActions from './ProductController';
-import * as CartActions from './CartController';
-import * as WishlistActions from './WishlistController';
-import * as ProjectActions from './ProjectController';
-import * as StoreActions from './StoreController';
-import * as BusinessUnitActions from './BusinessUnitController';
-import * as CustomerActions from './CustomerController';
-import * as QuoteActions from './QuoteController';
-import * as DashboardActions from './DashboardController';
-export const actions = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.actions = void 0;
+const AccountActions = require("./AccountController");
+const ProductActions = require("./ProductController");
+const CartActions = require("./CartController");
+const WishlistActions = require("./WishlistController");
+const ProjectActions = require("./ProjectController");
+const StoreActions = require("./StoreController");
+const BusinessUnitActions = require("./BusinessUnitController");
+const CustomerActions = require("./CustomerController");
+const QuoteActions = require("./QuoteController");
+const DashboardActions = require("./DashboardController");
+exports.actions = {
     account: AccountActions,
     cart: CartActions,
     customer: CustomerActions,

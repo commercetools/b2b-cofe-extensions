@@ -1,6 +1,18 @@
-import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-import { ClientFactory } from '../ClientFactory';
-import { getConfig } from '../utils/GetConfig';
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BaseApi = void 0;
+const platform_sdk_1 = require("@commercetools/platform-sdk");
+const ClientFactory_1 = require("../ClientFactory");
+const GetConfig_1 = require("../utils/GetConfig");
 const localeRegex = /^(?<language>[a-z]{2,})(?:_(?<territory>[A-Z]{2,}))?(?:\.(?<codeset>[A-Z0-9_+-]+))?(?:@(?<modifier>[A-Za-z]+))?$/;
 const languageToTerritory = {
     en: 'GB',
@@ -343,12 +355,12 @@ const pickCommercetoolsCurrency = (parsedLocale, availableCurrencies) => {
     }
     return availableCurrencies[0];
 };
-export class BaseApi {
+class BaseApi {
     constructor(frontasticContext, locale) {
         const engine = 'commercetools';
-        const clientSettings = getConfig(frontasticContext.project, engine, locale);
-        const client = ClientFactory.factor(clientSettings, frontasticContext.environment);
-        this.apiRoot = createApiBuilderFromCtpClient(client);
+        const clientSettings = (0, GetConfig_1.getConfig)(frontasticContext.project, engine, locale);
+        const client = ClientFactory_1.ClientFactory.factor(clientSettings, frontasticContext.environment);
+        this.apiRoot = (0, platform_sdk_1.createApiBuilderFromCtpClient)(client);
         this.projectKey = clientSettings.projectKey;
         this.locale = locale;
         this.frontasticContext = frontasticContext;
@@ -356,49 +368,56 @@ export class BaseApi {
     getApiForProject() {
         return this.apiRoot.withProjectKey({ projectKey: this.projectKey });
     }
-    async getCommercetoolsLocal() {
-        const parsedLocale = parseLocale(this.locale);
-        const project = await this.getProject();
-        const language = pickCommercetoolsLanguage(parsedLocale, project.languages);
-        const country = pickCommercetoolsCountry(parsedLocale, language, project.countries);
-        const currency = pickCommercetoolsCurrency(parsedLocale, project.currencies);
-        return Promise.resolve({
-            language,
-            country,
-            currency,
+    getCommercetoolsLocal() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const parsedLocale = parseLocale(this.locale);
+            const project = yield this.getProject();
+            const language = pickCommercetoolsLanguage(parsedLocale, project.languages);
+            const country = pickCommercetoolsCountry(parsedLocale, language, project.countries);
+            const currency = pickCommercetoolsCurrency(parsedLocale, project.currencies);
+            return Promise.resolve({
+                language,
+                country,
+                currency,
+            });
         });
     }
-    async getProductTypes() {
-        const now = new Date();
-        if (this.projectKey in productTypesCache) {
-            const cacheEntry = productTypesCache[this.projectKey];
-            if (cacheEntry.expiryTime < now) {
-                return cacheEntry.productTypes;
+    getProductTypes() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const now = new Date();
+            if (this.projectKey in productTypesCache) {
+                const cacheEntry = productTypesCache[this.projectKey];
+                if (cacheEntry.expiryTime < now) {
+                    return cacheEntry.productTypes;
+                }
             }
-        }
-        const response = await this.getApiForProject().productTypes().get().execute();
-        const productTypes = response.body.results;
-        productTypesCache[this.projectKey] = {
-            productTypes,
-            expiryTime: new Date(now.getMilliseconds() + projectCacheTtlMilliseconds),
-        };
-        return productTypes;
+            const response = yield this.getApiForProject().productTypes().get().execute();
+            const productTypes = response.body.results;
+            productTypesCache[this.projectKey] = {
+                productTypes,
+                expiryTime: new Date(now.getMilliseconds() + projectCacheTtlMilliseconds),
+            };
+            return productTypes;
+        });
     }
-    async getProject() {
-        const now = new Date();
-        if (this.projectKey in projectCache) {
-            const cacheEntry = projectCache[this.projectKey];
-            if (cacheEntry.expiryTime < now) {
-                return cacheEntry.project;
+    getProject() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const now = new Date();
+            if (this.projectKey in projectCache) {
+                const cacheEntry = projectCache[this.projectKey];
+                if (cacheEntry.expiryTime < now) {
+                    return cacheEntry.project;
+                }
             }
-        }
-        const response = await this.getApiForProject().get().execute();
-        const project = response.body;
-        projectCache[this.projectKey] = {
-            project,
-            expiryTime: new Date(now.getMilliseconds() + projectCacheTtlMilliseconds),
-        };
-        return project;
+            const response = yield this.getApiForProject().get().execute();
+            const project = response.body;
+            projectCache[this.projectKey] = {
+                project,
+                expiryTime: new Date(now.getMilliseconds() + projectCacheTtlMilliseconds),
+            };
+            return project;
+        });
     }
 }
+exports.BaseApi = BaseApi;
 //# sourceMappingURL=BaseApi.js.map

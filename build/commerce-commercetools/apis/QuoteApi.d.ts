@@ -1,8 +1,8 @@
 import { QuoteRequest as CommercetoolsQuoteRequest, QuoteRequestDraft, Quote as CommercetoolsQuote, StagedQuote as CommercetoolsStagedQuote, QuoteState } from '@commercetools/platform-sdk';
 import { BaseApi } from './BaseApi';
-import { QuoteRequest } from '@Types/quotes/QuoteRequest';
-import { Quote } from '@Types/quotes/Quote';
-import { StagedQuote } from '@Types/quotes/StagedQuote';
+import { QuoteRequest } from '../../../node_modules/@b2bdemo/types/build/quotes/QuoteRequest';
+import { Quote } from '../../../node_modules/@b2bdemo/types/build/quotes/Quote';
+import { StagedQuote } from '../../../node_modules/@b2bdemo/types/build/quotes/StagedQuote';
 export declare class QuoteApi extends BaseApi {
     createQuoteRequest: (quoteRequest: QuoteRequestDraft) => Promise<CommercetoolsQuoteRequest>;
     getStagedQuote: (ID: string) => Promise<CommercetoolsStagedQuote>;

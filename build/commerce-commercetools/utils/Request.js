@@ -1,8 +1,12 @@
-export const getPath = (request) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getLocale = exports.getPath = void 0;
+const getPath = (request) => {
     var _a;
     return (_a = getHeader(request, 'frontastic-path')) !== null && _a !== void 0 ? _a : request.query.path;
 };
-export const getLocale = (request) => {
+exports.getPath = getPath;
+const getLocale = (request) => {
     var _a, _b;
     const locale = (_a = getHeader(request, 'frontastic-locale')) !== null && _a !== void 0 ? _a : request.query.locale;
     if (locale !== undefined) {
@@ -10,6 +14,7 @@ export const getLocale = (request) => {
     }
     throw new Error(`Locale is missing from request ${request}`);
 };
+exports.getLocale = getLocale;
 const getHeader = (request, header) => {
     if (header in request.headers) {
         const foundHeader = request.headers[header];

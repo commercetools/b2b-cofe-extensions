@@ -1,13 +1,25 @@
-import { CartMapper } from '../mappers/CartMapper';
-import { BaseApi } from './BaseApi';
-import { isReadyForCheckout } from '../utils/Cart';
-export class CartApi extends BaseApi {
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CartApi = void 0;
+const CartMapper_1 = require("../mappers/CartMapper");
+const BaseApi_1 = require("./BaseApi");
+const Cart_1 = require("../utils/Cart");
+class CartApi extends BaseApi_1.BaseApi {
     constructor() {
         super(...arguments);
-        this.getForUser = async (account, organization) => {
+        this.getForUser = (account, organization) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const response = yield this.getApiForProject()
                     .carts()
                     .get({
                     queryArgs: {
@@ -35,11 +47,11 @@ export class CartApi extends BaseApi {
             catch (error) {
                 throw new Error(`getForUser failed. ${error}`);
             }
-        };
-        this.createCart = async (customerId, organization) => {
+        });
+        this.createCart = (customerId, organization) => __awaiter(this, void 0, void 0, function* () {
             var _a, _b, _c;
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const config = (_c = (_b = (_a = this.frontasticContext) === null || _a === void 0 ? void 0 : _a.project) === null || _b === void 0 ? void 0 : _b.configuration) === null || _c === void 0 ? void 0 : _c.preBuy;
                 const cartDraft = {
                     currency: locale.currency,
@@ -68,7 +80,7 @@ export class CartApi extends BaseApi {
                     };
                     cartDraft.inventoryMode = 'None';
                 }
-                const commercetoolsCart = await this.getApiForProject()
+                const commercetoolsCart = yield this.getApiForProject()
                     .carts()
                     .post({
                     queryArgs: {
@@ -86,11 +98,11 @@ export class CartApi extends BaseApi {
             catch (error) {
                 throw error;
             }
-        };
-        this.getById = async (cartId) => {
+        });
+        this.getById = (cartId) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const response = yield this.getApiForProject()
                     .carts()
                     .withId({
                     ID: cartId,
@@ -111,10 +123,10 @@ export class CartApi extends BaseApi {
             catch (error) {
                 throw new Error(`getById failed. ${error}`);
             }
-        };
-        this.addToCart = async (cart, lineItem, distributionChannel) => {
+        });
+        this.addToCart = (cart, lineItem, distributionChannel) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const cartUpdate = {
                     version: +cart.cartVersion,
                     actions: [
@@ -126,16 +138,16 @@ export class CartApi extends BaseApi {
                         },
                     ],
                 };
-                const commercetoolsCart = await this.updateCart(cart.cartId, cartUpdate, locale);
+                const commercetoolsCart = yield this.updateCart(cart.cartId, cartUpdate, locale);
                 return this.buildCartWithAvailableShippingMethods(commercetoolsCart, locale);
             }
             catch (error) {
                 throw new Error(`addToCart failed. ${error}`);
             }
-        };
-        this.addItemsToCart = async (cart, lineItems, distributionChannel) => {
+        });
+        this.addItemsToCart = (cart, lineItems, distributionChannel) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const cartUpdate = {
                     version: +cart.cartVersion,
                     actions: lineItems.map((lineItem) => ({
@@ -145,16 +157,16 @@ export class CartApi extends BaseApi {
                         distributionChannel: { id: distributionChannel, typeId: 'channel' },
                     })),
                 };
-                const commercetoolsCart = await this.updateCart(cart.cartId, cartUpdate, locale);
+                const commercetoolsCart = yield this.updateCart(cart.cartId, cartUpdate, locale);
                 return this.buildCartWithAvailableShippingMethods(commercetoolsCart, locale);
             }
             catch (error) {
                 throw new Error(`addToCart failed. ${error}`);
             }
-        };
-        this.updateLineItem = async (cart, lineItem) => {
+        });
+        this.updateLineItem = (cart, lineItem) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const cartUpdate = {
                     version: +cart.cartVersion,
                     actions: [
@@ -165,16 +177,16 @@ export class CartApi extends BaseApi {
                         },
                     ],
                 };
-                const commercetoolsCart = await this.updateCart(cart.cartId, cartUpdate, locale);
+                const commercetoolsCart = yield this.updateCart(cart.cartId, cartUpdate, locale);
                 return this.buildCartWithAvailableShippingMethods(commercetoolsCart, locale);
             }
             catch (error) {
                 throw new Error(`updateLineItem failed. ${error}`);
             }
-        };
-        this.removeLineItem = async (cart, lineItem) => {
+        });
+        this.removeLineItem = (cart, lineItem) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const cartUpdate = {
                     version: +cart.cartVersion,
                     actions: [
@@ -184,16 +196,16 @@ export class CartApi extends BaseApi {
                         },
                     ],
                 };
-                const commercetoolsCart = await this.updateCart(cart.cartId, cartUpdate, locale);
+                const commercetoolsCart = yield this.updateCart(cart.cartId, cartUpdate, locale);
                 return this.buildCartWithAvailableShippingMethods(commercetoolsCart, locale);
             }
             catch (error) {
                 throw new Error(`removeLineItem failed. ${error}`);
             }
-        };
-        this.setEmail = async (cart, email) => {
+        });
+        this.setEmail = (cart, email) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const cartUpdate = {
                     version: +cart.cartVersion,
                     actions: [
@@ -203,16 +215,16 @@ export class CartApi extends BaseApi {
                         },
                     ],
                 };
-                const commercetoolsCart = await this.updateCart(cart.cartId, cartUpdate, locale);
+                const commercetoolsCart = yield this.updateCart(cart.cartId, cartUpdate, locale);
                 return this.buildCartWithAvailableShippingMethods(commercetoolsCart, locale);
             }
             catch (error) {
                 throw new Error(`setEmail failed. ${error}`);
             }
-        };
-        this.setCustomerId = async (cart, customerId) => {
+        });
+        this.setCustomerId = (cart, customerId) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const cartUpdate = {
                     version: +cart.cartVersion,
                     actions: [
@@ -222,16 +234,16 @@ export class CartApi extends BaseApi {
                         },
                     ],
                 };
-                const commercetoolsCart = await this.updateCart(cart.cartId, cartUpdate, locale);
+                const commercetoolsCart = yield this.updateCart(cart.cartId, cartUpdate, locale);
                 return this.buildCartWithAvailableShippingMethods(commercetoolsCart, locale);
             }
             catch (error) {
                 throw new Error(`setCustomerId failed. ${error}`);
             }
-        };
-        this.setLocale = async (cart, localeCode) => {
+        });
+        this.setLocale = (cart, localeCode) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const cartUpdate = {
                     version: +cart.cartVersion,
                     actions: [
@@ -241,54 +253,54 @@ export class CartApi extends BaseApi {
                         },
                     ],
                 };
-                const commercetoolsCart = await this.updateCart(cart.cartId, cartUpdate, locale);
+                const commercetoolsCart = yield this.updateCart(cart.cartId, cartUpdate, locale);
                 return this.buildCartWithAvailableShippingMethods(commercetoolsCart, locale);
             }
             catch (error) {
                 throw new Error(`setLocale failed. ${error}`);
             }
-        };
-        this.setShippingAddress = async (cart, address) => {
+        });
+        this.setShippingAddress = (cart, address) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const cartUpdate = {
                     version: +cart.cartVersion,
                     actions: [
                         {
                             action: 'setShippingAddress',
-                            address: CartMapper.addressToCommercetoolsAddress(address),
+                            address: CartMapper_1.CartMapper.addressToCommercetoolsAddress(address),
                         },
                     ],
                 };
-                const commercetoolsCart = await this.updateCart(cart.cartId, cartUpdate, locale);
+                const commercetoolsCart = yield this.updateCart(cart.cartId, cartUpdate, locale);
                 return this.buildCartWithAvailableShippingMethods(commercetoolsCart, locale);
             }
             catch (error) {
                 throw new Error(`setShippingAddress failed. ${error}`);
             }
-        };
-        this.setBillingAddress = async (cart, address) => {
+        });
+        this.setBillingAddress = (cart, address) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const cartUpdate = {
                     version: +cart.cartVersion,
                     actions: [
                         {
                             action: 'setBillingAddress',
-                            address: CartMapper.addressToCommercetoolsAddress(address),
+                            address: CartMapper_1.CartMapper.addressToCommercetoolsAddress(address),
                         },
                     ],
                 };
-                const commercetoolsCart = await this.updateCart(cart.cartId, cartUpdate, locale);
+                const commercetoolsCart = yield this.updateCart(cart.cartId, cartUpdate, locale);
                 return this.buildCartWithAvailableShippingMethods(commercetoolsCart, locale);
             }
             catch (error) {
                 throw new Error(`setBillingAddress failed. ${error}`);
             }
-        };
-        this.setShippingMethod = async (cart, shippingMethod) => {
+        });
+        this.setShippingMethod = (cart, shippingMethod) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const cartUpdate = {
                     version: +cart.cartVersion,
                     actions: [
@@ -301,17 +313,17 @@ export class CartApi extends BaseApi {
                         },
                     ],
                 };
-                const commercetoolsCart = await this.updateCart(cart.cartId, cartUpdate, locale);
+                const commercetoolsCart = yield this.updateCart(cart.cartId, cartUpdate, locale);
                 return this.buildCartWithAvailableShippingMethods(commercetoolsCart, locale);
             }
             catch (error) {
                 throw new Error(`setShippingMethod failed. ${error}`);
             }
-        };
-        this.order = async (cart) => {
-            var _a, _b, _c;
+        });
+        this.order = (cart) => __awaiter(this, void 0, void 0, function* () {
+            var _d, _e, _f;
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const date = new Date();
                 const orderFromCartDraft = {
                     id: cart.cartId,
@@ -319,11 +331,11 @@ export class CartApi extends BaseApi {
                     orderNumber: `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}-${String(Date.now()).slice(-6, -1)}`,
                     orderState: cart.isPreBuyCart ? 'Open' : 'Confirmed',
                 };
-                if (!isReadyForCheckout(cart)) {
+                if (!(0, Cart_1.isReadyForCheckout)(cart)) {
                     throw new Error('Cart not complete yet.');
                 }
-                const config = (_c = (_b = (_a = this.frontasticContext) === null || _a === void 0 ? void 0 : _a.project) === null || _b === void 0 ? void 0 : _b.configuration) === null || _c === void 0 ? void 0 : _c.preBuy;
-                const response = await this.getApiForProject()
+                const config = (_f = (_e = (_d = this.frontasticContext) === null || _d === void 0 ? void 0 : _d.project) === null || _e === void 0 ? void 0 : _e.configuration) === null || _f === void 0 ? void 0 : _f.preBuy;
+                const response = yield this.getApiForProject()
                     .orders()
                     .post({
                     queryArgs: {
@@ -336,18 +348,18 @@ export class CartApi extends BaseApi {
                     body: orderFromCartDraft,
                 })
                     .execute();
-                return CartMapper.commercetoolsOrderToOrder(response.body, locale, config);
+                return CartMapper_1.CartMapper.commercetoolsOrderToOrder(response.body, locale, config);
             }
             catch (error) {
                 throw new Error(`order failed. ${error}`);
             }
-        };
-        this.getOrders = async (account) => {
-            var _a, _b, _c;
+        });
+        this.getOrders = (account) => __awaiter(this, void 0, void 0, function* () {
+            var _g, _h, _j;
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const config = (_c = (_b = (_a = this.frontasticContext) === null || _a === void 0 ? void 0 : _a.project) === null || _b === void 0 ? void 0 : _b.configuration) === null || _c === void 0 ? void 0 : _c.preBuy;
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const config = (_j = (_h = (_g = this.frontasticContext) === null || _g === void 0 ? void 0 : _g.project) === null || _h === void 0 ? void 0 : _h.configuration) === null || _j === void 0 ? void 0 : _j.preBuy;
+                const response = yield this.getApiForProject()
                     .orders()
                     .get({
                     queryArgs: {
@@ -361,18 +373,18 @@ export class CartApi extends BaseApi {
                     },
                 })
                     .execute();
-                return response.body.results.map((order) => CartMapper.commercetoolsOrderToOrder(order, locale, config));
+                return response.body.results.map((order) => CartMapper_1.CartMapper.commercetoolsOrderToOrder(order, locale, config));
             }
             catch (error) {
                 throw new Error(`get orders failed. ${error}`);
             }
-        };
-        this.getOrder = async (orderNumber) => {
-            var _a, _b, _c;
+        });
+        this.getOrder = (orderNumber) => __awaiter(this, void 0, void 0, function* () {
+            var _k, _l, _m;
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const config = (_c = (_b = (_a = this.frontasticContext) === null || _a === void 0 ? void 0 : _a.project) === null || _b === void 0 ? void 0 : _b.configuration) === null || _c === void 0 ? void 0 : _c.preBuy;
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const config = (_m = (_l = (_k = this.frontasticContext) === null || _k === void 0 ? void 0 : _k.project) === null || _l === void 0 ? void 0 : _l.configuration) === null || _m === void 0 ? void 0 : _m.preBuy;
+                const response = yield this.getApiForProject()
                     .orders()
                     .withOrderNumber({ orderNumber })
                     .get({
@@ -385,18 +397,18 @@ export class CartApi extends BaseApi {
                     },
                 })
                     .execute();
-                return CartMapper.commercetoolsOrderToOrder(response.body, locale, config);
+                return CartMapper_1.CartMapper.commercetoolsOrderToOrder(response.body, locale, config);
             }
             catch (error) {
                 throw new Error(`get orders failed. ${error}`);
             }
-        };
-        this.returnItems = async (orderNumber, returnLineItems) => {
-            var _a, _b, _c;
+        });
+        this.returnItems = (orderNumber, returnLineItems) => __awaiter(this, void 0, void 0, function* () {
+            var _o, _p, _q;
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const config = (_c = (_b = (_a = this.frontasticContext) === null || _a === void 0 ? void 0 : _a.project) === null || _b === void 0 ? void 0 : _b.configuration) === null || _c === void 0 ? void 0 : _c.preBuy;
-                const response = await this.getOrder(orderNumber).then((order) => {
+                const locale = yield this.getCommercetoolsLocal();
+                const config = (_q = (_p = (_o = this.frontasticContext) === null || _o === void 0 ? void 0 : _o.project) === null || _p === void 0 ? void 0 : _p.configuration) === null || _q === void 0 ? void 0 : _q.preBuy;
+                const response = yield this.getOrder(orderNumber).then((order) => {
                     return this.getApiForProject()
                         .orders()
                         .withOrderNumber({ orderNumber })
@@ -415,18 +427,18 @@ export class CartApi extends BaseApi {
                     })
                         .execute();
                 });
-                return CartMapper.commercetoolsOrderToOrder(response.body, locale, config);
+                return CartMapper_1.CartMapper.commercetoolsOrderToOrder(response.body, locale, config);
             }
             catch (error) {
                 throw error;
             }
-        };
-        this.getBusinessUnitOrders = async (keys) => {
-            var _a, _b, _c;
+        });
+        this.getBusinessUnitOrders = (keys) => __awaiter(this, void 0, void 0, function* () {
+            var _r, _s, _t;
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const config = (_c = (_b = (_a = this.frontasticContext) === null || _a === void 0 ? void 0 : _a.project) === null || _b === void 0 ? void 0 : _b.configuration) === null || _c === void 0 ? void 0 : _c.preBuy;
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const config = (_t = (_s = (_r = this.frontasticContext) === null || _r === void 0 ? void 0 : _r.project) === null || _s === void 0 ? void 0 : _s.configuration) === null || _t === void 0 ? void 0 : _t.preBuy;
+                const response = yield this.getApiForProject()
                     .orders()
                     .get({
                     queryArgs: {
@@ -440,15 +452,15 @@ export class CartApi extends BaseApi {
                     },
                 })
                     .execute();
-                return response.body.results.map((order) => CartMapper.commercetoolsOrderToOrder(order, locale, config));
+                return response.body.results.map((order) => CartMapper_1.CartMapper.commercetoolsOrderToOrder(order, locale, config));
             }
             catch (error) {
                 throw new Error(`get orders failed. ${error}`);
             }
-        };
-        this.getShippingMethods = async (onlyMatching) => {
+        });
+        this.getShippingMethods = (onlyMatching) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const methodArgs = {
                     queryArgs: {
                         expand: ['zoneRates[*].zone'],
@@ -460,17 +472,17 @@ export class CartApi extends BaseApi {
                     methodArgs.queryArgs.country = locale.country;
                     requestBuilder = this.getApiForProject().shippingMethods().matchingLocation().get(methodArgs);
                 }
-                const response = await requestBuilder.execute();
-                return response.body.results.map((shippingMethod) => CartMapper.commercetoolsShippingMethodToShippingMethod(shippingMethod, locale));
+                const response = yield requestBuilder.execute();
+                return response.body.results.map((shippingMethod) => CartMapper_1.CartMapper.commercetoolsShippingMethodToShippingMethod(shippingMethod, locale));
             }
             catch (error) {
                 throw new Error(`getShippingMethods failed. ${error}`);
             }
-        };
-        this.getAvailableShippingMethods = async (cart) => {
+        });
+        this.getAvailableShippingMethods = (cart) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const response = yield this.getApiForProject()
                     .shippingMethods()
                     .matchingCart()
                     .get({
@@ -480,16 +492,16 @@ export class CartApi extends BaseApi {
                     },
                 })
                     .execute();
-                return response.body.results.map((shippingMethod) => CartMapper.commercetoolsShippingMethodToShippingMethod(shippingMethod, locale));
+                return response.body.results.map((shippingMethod) => CartMapper_1.CartMapper.commercetoolsShippingMethodToShippingMethod(shippingMethod, locale));
             }
             catch (error) {
                 throw new Error(`getAvailableShippingMethods failed. ${error}`);
             }
-        };
-        this.addPayment = async (cart, payment) => {
+        });
+        this.addPayment = (cart, payment) => __awaiter(this, void 0, void 0, function* () {
             let paymentDraft;
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 paymentDraft = {
                     key: payment.id,
                     amountPlanned: {
@@ -506,7 +518,7 @@ export class CartApi extends BaseApi {
                         interfaceText: payment.debug,
                     },
                 };
-                const paymentResponse = await this.getApiForProject()
+                const paymentResponse = yield this.getApiForProject()
                     .payments()
                     .post({
                     body: paymentDraft,
@@ -524,16 +536,16 @@ export class CartApi extends BaseApi {
                         },
                     ],
                 };
-                const commercetoolsCart = await this.updateCart(cart.cartId, cartUpdate, locale);
+                const commercetoolsCart = yield this.updateCart(cart.cartId, cartUpdate, locale);
                 return this.buildCartWithAvailableShippingMethods(commercetoolsCart, locale);
             }
             catch (error) {
                 throw new Error(`addPayment failed. ${error}, ${JSON.stringify(paymentDraft)}`);
             }
-        };
-        this.updatePayment = async (cart, payment) => {
+        });
+        this.updatePayment = (cart, payment) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const originalPayment = cart.payments.find((cartPayment) => cartPayment.id === payment.id);
                 if (originalPayment === undefined) {
                     throw new Error(`Payment ${payment.id} not found in cart ${cart.cartId}`);
@@ -560,7 +572,7 @@ export class CartApi extends BaseApi {
                 if (paymentUpdateActions.length === 0) {
                     return payment;
                 }
-                const response = await this.getApiForProject()
+                const response = yield this.getApiForProject()
                     .payments()
                     .withKey({
                     key: originalPayment.id,
@@ -572,15 +584,15 @@ export class CartApi extends BaseApi {
                     },
                 })
                     .execute();
-                return CartMapper.commercetoolsPaymentToPayment(response.body, locale);
+                return CartMapper_1.CartMapper.commercetoolsPaymentToPayment(response.body, locale);
             }
             catch (error) {
                 throw new Error(`updatePayment failed. ${error}`);
             }
-        };
-        this.redeemDiscountCode = async (cart, code) => {
+        });
+        this.redeemDiscountCode = (cart, code) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const cartUpdate = {
                     version: +cart.cartVersion,
                     actions: [
@@ -590,8 +602,8 @@ export class CartApi extends BaseApi {
                         },
                     ],
                 };
-                const commercetoolsCart = await this.updateCart(cart.cartId, cartUpdate, locale);
-                const data = await this.buildCartWithAvailableShippingMethods(commercetoolsCart, locale);
+                const commercetoolsCart = yield this.updateCart(cart.cartId, cartUpdate, locale);
+                const data = yield this.buildCartWithAvailableShippingMethods(commercetoolsCart, locale);
                 return { statusCode: 200, data };
             }
             catch (error) {
@@ -600,10 +612,10 @@ export class CartApi extends BaseApi {
                     error: error.message,
                 };
             }
-        };
-        this.removeDiscountCode = async (cart, discount) => {
+        });
+        this.removeDiscountCode = (cart, discount) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
+                const locale = yield this.getCommercetoolsLocal();
                 const cartUpdate = {
                     version: +cart.cartVersion,
                     actions: [
@@ -616,31 +628,31 @@ export class CartApi extends BaseApi {
                         },
                     ],
                 };
-                const commercetoolsCart = await this.updateCart(cart.cartId, cartUpdate, locale);
+                const commercetoolsCart = yield this.updateCart(cart.cartId, cartUpdate, locale);
                 return this.buildCartWithAvailableShippingMethods(commercetoolsCart, locale);
             }
             catch (error) {
                 throw new Error(`removeDiscountCode failed. ${error}`);
             }
-        };
-        this.buildCartWithAvailableShippingMethods = async (commercetoolsCart, locale) => {
-            const cart = await this.assertCorrectLocale(commercetoolsCart, locale);
+        });
+        this.buildCartWithAvailableShippingMethods = (commercetoolsCart, locale) => __awaiter(this, void 0, void 0, function* () {
+            const cart = yield this.assertCorrectLocale(commercetoolsCart, locale);
             try {
                 if (cart.shippingAddress !== undefined && cart.shippingAddress.country !== undefined) {
-                    cart.availableShippingMethods = await this.getAvailableShippingMethods(cart);
+                    cart.availableShippingMethods = yield this.getAvailableShippingMethods(cart);
                 }
             }
             catch (error) {
                 throw new Error(`buildCartWithAvailableShippingMethods failed. ${error}`);
             }
             return cart;
-        };
-        this.assertCorrectLocale = async (commercetoolsCart, locale) => {
-            var _a, _b, _c;
+        });
+        this.assertCorrectLocale = (commercetoolsCart, locale) => __awaiter(this, void 0, void 0, function* () {
+            var _u, _v, _w;
             if (commercetoolsCart.totalPrice.currencyCode !== locale.currency.toLocaleUpperCase()) {
                 return this.recreate(commercetoolsCart, locale);
             }
-            const config = (_c = (_b = (_a = this.frontasticContext) === null || _a === void 0 ? void 0 : _a.project) === null || _b === void 0 ? void 0 : _b.configuration) === null || _c === void 0 ? void 0 : _c.preBuy;
+            const config = (_w = (_v = (_u = this.frontasticContext) === null || _u === void 0 ? void 0 : _u.project) === null || _v === void 0 ? void 0 : _v.configuration) === null || _w === void 0 ? void 0 : _w.preBuy;
             if (this.doesCartNeedLocaleUpdate(commercetoolsCart, locale)) {
                 const cartUpdate = {
                     version: commercetoolsCart.version,
@@ -655,12 +667,12 @@ export class CartApi extends BaseApi {
                         },
                     ],
                 };
-                commercetoolsCart = await this.updateCart(commercetoolsCart.id, cartUpdate, locale);
-                return CartMapper.commercetoolsCartToCart(commercetoolsCart, locale, config);
+                commercetoolsCart = yield this.updateCart(commercetoolsCart.id, cartUpdate, locale);
+                return CartMapper_1.CartMapper.commercetoolsCartToCart(commercetoolsCart, locale, config);
             }
-            return CartMapper.commercetoolsCartToCart(commercetoolsCart, locale, config);
-        };
-        this.recreate = async (primaryCommercetoolsCart, locale) => {
+            return CartMapper_1.CartMapper.commercetoolsCartToCart(commercetoolsCart, locale, config);
+        });
+        this.recreate = (primaryCommercetoolsCart, locale) => __awaiter(this, void 0, void 0, function* () {
             const primaryCartId = primaryCommercetoolsCart.id;
             const cartVersion = primaryCommercetoolsCart.version;
             const lineItems = primaryCommercetoolsCart.lineItems;
@@ -693,7 +705,7 @@ export class CartApi extends BaseApi {
                     cartDraft[key] = primaryCommercetoolsCart[key];
                 }
             }
-            let replicatedCommercetoolsCart = await this.getApiForProject()
+            let replicatedCommercetoolsCart = yield this.getApiForProject()
                 .carts()
                 .post({
                 queryArgs: {
@@ -721,16 +733,16 @@ export class CartApi extends BaseApi {
                             },
                         ],
                     };
-                    replicatedCommercetoolsCart = await this.updateCart(replicatedCommercetoolsCart.id, cartUpdate, locale);
+                    replicatedCommercetoolsCart = yield this.updateCart(replicatedCommercetoolsCart.id, cartUpdate, locale);
                 }
                 catch (error) {
                 }
             }
-            await this.deleteCart(primaryCartId, cartVersion);
-            return CartMapper.commercetoolsCartToCart(replicatedCommercetoolsCart, locale);
-        };
-        this.deleteCart = async (primaryCartId, cartVersion) => {
-            await this.getApiForProject()
+            yield this.deleteCart(primaryCartId, cartVersion);
+            return CartMapper_1.CartMapper.commercetoolsCartToCart(replicatedCommercetoolsCart, locale);
+        });
+        this.deleteCart = (primaryCartId, cartVersion) => __awaiter(this, void 0, void 0, function* () {
+            yield this.getApiForProject()
                 .carts()
                 .withId({
                 ID: primaryCartId,
@@ -741,11 +753,11 @@ export class CartApi extends BaseApi {
                 },
             })
                 .execute();
-        };
-        this.replicateCart = async (orderId) => {
+        });
+        this.replicateCart = (orderId) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const locale = await this.getCommercetoolsLocal();
-                const response = await this.getApiForProject()
+                const locale = yield this.getCommercetoolsLocal();
+                const response = yield this.getApiForProject()
                     .carts()
                     .replicate()
                     .post({
@@ -762,8 +774,8 @@ export class CartApi extends BaseApi {
             catch (e) {
                 throw `cannot replicate ${e}`;
             }
-        };
-        this.addItemShippingAddress = async (originalCart, address) => {
+        });
+        this.addItemShippingAddress = (originalCart, address) => __awaiter(this, void 0, void 0, function* () {
             return this.getById(originalCart.cartId).then((cart) => {
                 return this.getApiForProject()
                     .carts()
@@ -776,18 +788,15 @@ export class CartApi extends BaseApi {
                         actions: [
                             {
                                 action: 'addItemShippingAddress',
-                                address: {
-                                    ...address,
-                                    key: address.id,
-                                },
+                                address: Object.assign(Object.assign({}, address), { key: address.id }),
                             },
                         ],
                     },
                 })
                     .execute();
             });
-        };
-        this.updateLineItemShippingDetails = async (cartId, lineItemId, targets) => {
+        });
+        this.updateLineItemShippingDetails = (cartId, lineItemId, targets) => __awaiter(this, void 0, void 0, function* () {
             return this.getById(cartId).then((cart) => {
                 return this.getApiForProject()
                     .carts()
@@ -810,7 +819,7 @@ export class CartApi extends BaseApi {
                 })
                     .execute();
             });
-        };
+        });
         this.doesCartNeedLocaleUpdate = (commercetoolsCart, locale) => {
             if (commercetoolsCart.country === undefined) {
                 return true;
@@ -821,26 +830,29 @@ export class CartApi extends BaseApi {
             return commercetoolsCart.country !== locale.country || commercetoolsCart.locale !== locale.language;
         };
     }
-    async updateCart(cartId, cartUpdate, locale) {
-        return await this.getApiForProject()
-            .carts()
-            .withId({
-            ID: cartId,
-        })
-            .post({
-            queryArgs: {
-                expand: [
-                    'lineItems[*].discountedPrice.includedDiscounts[*].discount',
-                    'discountCodes[*].discountCode',
-                    'paymentInfo.payments[*]',
-                ],
-            },
-            body: cartUpdate,
-        })
-            .execute()
-            .then((response) => {
-            return response.body;
+    updateCart(cartId, cartUpdate, locale) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.getApiForProject()
+                .carts()
+                .withId({
+                ID: cartId,
+            })
+                .post({
+                queryArgs: {
+                    expand: [
+                        'lineItems[*].discountedPrice.includedDiscounts[*].discount',
+                        'discountCodes[*].discountCode',
+                        'paymentInfo.payments[*]',
+                    ],
+                },
+                body: cartUpdate,
+            })
+                .execute()
+                .then((response) => {
+                return response.body;
+            });
         });
     }
 }
+exports.CartApi = CartApi;
 //# sourceMappingURL=CartApi.js.map

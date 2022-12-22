@@ -1,15 +1,15 @@
-import { Cart } from '@Types/cart/Cart';
+import { Cart } from '../../../node_modules/@b2bdemo/types/build/cart/Cart';
 import { BaseAddress as CommercetoolsAddress, Cart as CommercetoolsCart, DiscountCodeInfo as CommercetoolsDiscountCodeInfo, DiscountedLineItemPriceForQuantity as CommercetoolsDiscountedLineItemPriceForQuantity, DiscountedLineItemPortion as CommercetoolsDiscountedLineItemPortion, LineItem as CommercetoolsLineItem, Order as CommercetoolsOrder, Payment as CommercetoolsPayment, PaymentInfo as CommercetoolsPaymentInfo, ShippingInfo as CommercetoolsShippingInfo, ShippingMethod as CommercetoolsShippingMethod, TaxedPrice as CommercetoolsTaxedPrice, ZoneRate as CommercetoolsZoneRate, ReturnInfo as CommercetoolsReturnInfo } from '@commercetools/platform-sdk';
-import { LineItem } from '@Types/cart/LineItem';
-import { Address } from '@Types/account/Address';
-import { Order, ReturnInfo } from '@Types/cart/Order';
+import { LineItem } from '../../../node_modules/@b2bdemo/types/build/cart/LineItem';
+import { Address } from '../../../node_modules/@b2bdemo/types/build/account/Address';
+import { Order, ReturnInfo } from '../../../node_modules/@b2bdemo/types/build/cart/Order';
 import { Locale } from '../Locale';
-import { ShippingMethod } from '@Types/cart/ShippingMethod';
-import { ShippingRate } from '@Types/cart/ShippingRate';
-import { ShippingInfo } from '@Types/cart/ShippingInfo';
-import { Payment } from '@Types/cart/Payment';
-import { Tax } from '@Types/cart/Tax';
-import { Discount } from '@Types/cart/Discount';
+import { ShippingMethod } from '../../../node_modules/@b2bdemo/types/build/cart/ShippingMethod';
+import { ShippingRate } from '../../../node_modules/@b2bdemo/types/build/cart/ShippingRate';
+import { ShippingInfo } from '../../../node_modules/@b2bdemo/types/build/cart/ShippingInfo';
+import { Payment } from '../../../node_modules/@b2bdemo/types/build/cart/Payment';
+import { Tax } from '../../../node_modules/@b2bdemo/types/build/cart/Tax';
+import { Discount } from '../../../node_modules/@b2bdemo/types/build/cart/Discount';
 export declare class CartMapper {
     static commercetoolsCartToCart: (commercetoolsCart: CommercetoolsCart, locale: Locale, config?: Record<string, string>) => Cart;
     static commercetoolsLineItemsToLineItems: (commercetoolsLineItems: CommercetoolsLineItem[], locale: Locale) => LineItem[];

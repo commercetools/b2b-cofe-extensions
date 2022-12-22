@@ -1,4 +1,4 @@
-import { Wishlist, WishlistDraft } from '@Types/wishlist/Wishlist';
+import { Wishlist, WishlistDraft } from '../../../node_modules/@b2bdemo/types/build/wishlist/Wishlist';
 import { ShoppingList } from '@commercetools/platform-sdk';
 import { ShoppingListDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/shopping-list';
 import { Locale } from '../Locale';

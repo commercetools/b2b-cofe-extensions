@@ -1,36 +1,48 @@
-import { BaseApi } from './BaseApi';
-import { StoreMode } from '@Types/business-unit/BusinessUnit';
-import { isUserAdminInBusinessUnit, mapBusinessUnitToBusinessUnit, mapReferencedAssociates, mapStoreRefs, } from '../mappers/BusinessUnitMappers';
-import { StoreApi } from './StoreApi';
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BusinessUnitApi = void 0;
+const BaseApi_1 = require("./BaseApi");
+const BusinessUnit_1 = require("../../../node_modules/@b2bdemo/types/build/business-unit/BusinessUnit");
+const BusinessUnitMappers_1 = require("../mappers/BusinessUnitMappers");
+const StoreApi_1 = require("./StoreApi");
 const MAX_LIMIT = 50;
-export class BusinessUnitApi extends BaseApi {
+class BusinessUnitApi extends BaseApi_1.BaseApi {
     constructor() {
         super(...arguments);
-        this.getOrganizationByBusinessUnit = async (businessUnit) => {
+        this.getOrganizationByBusinessUnit = (businessUnit) => __awaiter(this, void 0, void 0, function* () {
             var _a, _b, _c;
             const organization = {};
             organization.businessUnit = businessUnit;
             if ((_a = businessUnit.stores) === null || _a === void 0 ? void 0 : _a[0]) {
-                const storeApi = new StoreApi(this.frontasticContext, this.locale);
-                const store = await storeApi.get((_b = businessUnit.stores) === null || _b === void 0 ? void 0 : _b[0].key);
+                const storeApi = new StoreApi_1.StoreApi(this.frontasticContext, this.locale);
+                const store = yield storeApi.get((_b = businessUnit.stores) === null || _b === void 0 ? void 0 : _b[0].key);
                 organization.store = store;
                 if ((_c = store === null || store === void 0 ? void 0 : store.distributionChannels) === null || _c === void 0 ? void 0 : _c.length) {
                     organization.distributionChannel = store.distributionChannels[0];
                 }
             }
             return organization;
-        };
-        this.getOrganization = async (accountId) => {
+        });
+        this.getOrganization = (accountId) => __awaiter(this, void 0, void 0, function* () {
             const organization = {};
             if (accountId) {
-                const businessUnit = await this.getMe(accountId);
+                const businessUnit = yield this.getMe(accountId);
                 if (businessUnit === null || businessUnit === void 0 ? void 0 : businessUnit.key) {
                     return this.getOrganizationByBusinessUnit(businessUnit);
                 }
             }
             return organization;
-        };
-        this.create = async (data) => {
+        });
+        this.create = (data) => __awaiter(this, void 0, void 0, function* () {
             try {
                 return this.getApiForProject()
                     .businessUnits()
@@ -43,8 +55,8 @@ export class BusinessUnitApi extends BaseApi {
             catch (e) {
                 throw e;
             }
-        };
-        this.delete = async (key) => {
+        });
+        this.delete = (key) => __awaiter(this, void 0, void 0, function* () {
             try {
                 return this.getByKey(key).then((bu) => {
                     return this.getApiForProject()
@@ -62,8 +74,8 @@ export class BusinessUnitApi extends BaseApi {
             catch (e) {
                 throw e;
             }
-        };
-        this.update = async (key, actions) => {
+        });
+        this.update = (key, actions) => __awaiter(this, void 0, void 0, function* () {
             try {
                 return this.getByKey(key).then((res) => {
                     return this.getApiForProject()
@@ -83,8 +95,8 @@ export class BusinessUnitApi extends BaseApi {
                 console.log(e);
                 throw e;
             }
-        };
-        this.query = async (where, expand) => {
+        });
+        this.query = (where, expand) => __awaiter(this, void 0, void 0, function* () {
             try {
                 return this.getApiForProject()
                     .businessUnits()
@@ -101,7 +113,7 @@ export class BusinessUnitApi extends BaseApi {
             catch (e) {
                 throw e;
             }
-        };
+        });
         this.getHighestNodesWithAssociation = (businessUnits, accountId, filterAdmin) => {
             if (!businessUnits.length) {
                 return [];
@@ -115,27 +127,27 @@ export class BusinessUnitApi extends BaseApi {
                 return businessUnits.findIndex((sbu) => { var _a; return sbu.key === ((_a = bu.parentUnit) === null || _a === void 0 ? void 0 : _a.key); }) === -1;
             });
             return filterAdmin
-                ? justParents.filter((bu) => isUserAdminInBusinessUnit(bu, accountId))
+                ? justParents.filter((bu) => (0, BusinessUnitMappers_1.isUserAdminInBusinessUnit)(bu, accountId))
                 : justParents
-                    .sort((a, b) => isUserAdminInBusinessUnit(a, accountId) ? -1 : isUserAdminInBusinessUnit(b, accountId) ? 1 : 0);
+                    .sort((a, b) => (0, BusinessUnitMappers_1.isUserAdminInBusinessUnit)(a, accountId) ? -1 : (0, BusinessUnitMappers_1.isUserAdminInBusinessUnit)(b, accountId) ? 1 : 0);
         };
-        this.getMe = async (accountId) => {
+        this.getMe = (accountId) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const storeApi = new StoreApi(this.frontasticContext, this.locale);
-                const allStores = await storeApi.query();
-                const response = await this.query(`associates(customer(id="${accountId}"))`, 'associates[*].customer');
+                const storeApi = new StoreApi_1.StoreApi(this.frontasticContext, this.locale);
+                const allStores = yield storeApi.query();
+                const response = yield this.query(`associates(customer(id="${accountId}"))`, 'associates[*].customer');
                 const highestNodes = this.getHighestNodesWithAssociation(response.results, accountId);
                 if (highestNodes.length) {
-                    const bu = await this.setStoresByBusinessUnit(highestNodes[0]);
-                    return mapBusinessUnitToBusinessUnit(bu, allStores, accountId);
+                    const bu = yield this.setStoresByBusinessUnit(highestNodes[0]);
+                    return (0, BusinessUnitMappers_1.mapBusinessUnitToBusinessUnit)(bu, allStores, accountId);
                 }
                 return response;
             }
             catch (e) {
                 throw e;
             }
-        };
-        this.getByKey = async (key) => {
+        });
+        this.getByKey = (key) => __awaiter(this, void 0, void 0, function* () {
             try {
                 return this.getApiForProject()
                     .businessUnits()
@@ -147,56 +159,50 @@ export class BusinessUnitApi extends BaseApi {
             catch (e) {
                 throw e;
             }
-        };
-        this.get = async (key, accountId) => {
-            const storeApi = new StoreApi(this.frontasticContext, this.locale);
-            const allStores = await storeApi.query();
+        });
+        this.get = (key, accountId) => __awaiter(this, void 0, void 0, function* () {
+            const storeApi = new StoreApi_1.StoreApi(this.frontasticContext, this.locale);
+            const allStores = yield storeApi.query();
             try {
-                const bu = await this.getApiForProject()
+                const bu = yield this.getApiForProject()
                     .businessUnits()
                     .withKey({ key })
                     .get()
                     .execute()
                     .then((res) => this.setStoresByBusinessUnit(res.body));
-                return mapBusinessUnitToBusinessUnit(bu, allStores, accountId);
+                return (0, BusinessUnitMappers_1.mapBusinessUnitToBusinessUnit)(bu, allStores, accountId);
             }
             catch (e) {
                 throw e;
             }
-        };
-        this.setStoresByBusinessUnit = async (businessUnit) => {
-            if (businessUnit.storeMode === StoreMode.Explicit) {
+        });
+        this.setStoresByBusinessUnit = (businessUnit) => __awaiter(this, void 0, void 0, function* () {
+            if (businessUnit.storeMode === BusinessUnit_1.StoreMode.Explicit) {
                 return businessUnit;
             }
-            let parentBU = { ...businessUnit };
-            while (parentBU.storeMode === StoreMode.FromParent && !!parentBU.parentUnit) {
-                const { body } = await this.getApiForProject()
+            let parentBU = Object.assign({}, businessUnit);
+            while (parentBU.storeMode === BusinessUnit_1.StoreMode.FromParent && !!parentBU.parentUnit) {
+                const { body } = yield this.getApiForProject()
                     .businessUnits()
                     .withKey({ key: parentBU.parentUnit.key })
                     .get()
                     .execute();
                 parentBU = body;
             }
-            if (parentBU.storeMode === StoreMode.Explicit) {
-                return {
-                    ...businessUnit,
-                    stores: parentBU.stores,
-                };
+            if (parentBU.storeMode === BusinessUnit_1.StoreMode.Explicit) {
+                return Object.assign(Object.assign({}, businessUnit), { stores: parentBU.stores });
             }
             return businessUnit;
-        };
-        this.getTree = async (accountId) => {
+        });
+        this.getTree = (accountId) => __awaiter(this, void 0, void 0, function* () {
             let tree = [];
-            const storeApi = new StoreApi(this.frontasticContext, this.locale);
-            const allStores = await storeApi.query();
+            const storeApi = new StoreApi_1.StoreApi(this.frontasticContext, this.locale);
+            const allStores = yield storeApi.query();
             if (accountId) {
-                const response = await this.query(`associates(customer(id="${accountId}"))`, 'associates[*].customer');
-                tree = this.getHighestNodesWithAssociation(response.results, accountId, true).map((bu) => ({
-                    ...bu,
-                    parentUnit: null,
-                }));
+                const response = yield this.query(`associates(customer(id="${accountId}"))`, 'associates[*].customer');
+                tree = this.getHighestNodesWithAssociation(response.results, accountId, true).map((bu) => (Object.assign(Object.assign({}, bu), { parentUnit: null })));
                 if (tree.length) {
-                    const { results } = await this.query(`topLevelUnit(key="${tree[0].topLevelUnit.key}")`, 'associates[*].customer');
+                    const { results } = yield this.query(`topLevelUnit(key="${tree[0].topLevelUnit.key}")`, 'associates[*].customer');
                     const tempParents = [...tree];
                     while (tempParents.length) {
                         const [item] = tempParents.splice(0, 1);
@@ -210,8 +216,9 @@ export class BusinessUnitApi extends BaseApi {
                     }
                 }
             }
-            return tree.map((bu) => mapStoreRefs(mapReferencedAssociates(bu), allStores));
-        };
+            return tree.map((bu) => (0, BusinessUnitMappers_1.mapStoreRefs)((0, BusinessUnitMappers_1.mapReferencedAssociates)(bu), allStores));
+        });
     }
 }
+exports.BusinessUnitApi = BusinessUnitApi;
 //# sourceMappingURL=BusinessUnitApi.js.map

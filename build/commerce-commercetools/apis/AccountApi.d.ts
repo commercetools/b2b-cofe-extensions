@@ -1,10 +1,10 @@
 import { BaseApi } from './BaseApi';
-import { Account } from '@Types/account/Account';
+import { Account } from '../../../node_modules/@b2bdemo/types/build/account/Account';
 import { CustomerUpdateAction, CustomerToken } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/customer';
 import { BaseAddress } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/common';
-import { Cart } from '@Types/cart/Cart';
-import { Address } from '@Types/account/Address';
-import { PasswordResetToken } from '@Types/account/PasswordResetToken';
+import { Cart } from '../../../node_modules/@b2bdemo/types/build/cart/Cart';
+import { Address } from '../../../node_modules/@b2bdemo/types/build/account/Address';
+import { PasswordResetToken } from '../../../node_modules/@b2bdemo/types/build/account/PasswordResetToken';
 export declare class AccountApi extends BaseApi {
     create: (account: Account, cart: Cart | undefined) => Promise<Account>;
     generateToken: (account: Account) => Promise<CustomerToken>;

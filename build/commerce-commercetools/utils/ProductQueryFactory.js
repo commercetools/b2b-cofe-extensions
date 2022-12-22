@@ -1,7 +1,10 @@
-import { SortOrder } from '@Types/query/ProductQuery';
-import { FilterTypes } from '@Types/query/Filter';
-import { FilterFieldTypes } from '@Types/product/FilterField';
-export class ProductQueryFactory {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ProductQueryFactory = void 0;
+const ProductQuery_1 = require("../../../node_modules/@b2bdemo/types/build/query/ProductQuery");
+const Filter_1 = require("../../../node_modules/@b2bdemo/types/build/query/Filter");
+const FilterField_1 = require("../../../node_modules/@b2bdemo/types/build/product/FilterField");
+class ProductQueryFactory {
     static queryParamsToFacets(queryParams) {
         const facets = [];
         let key;
@@ -13,7 +16,7 @@ export class ProductQueryFactory {
             switch (true) {
                 case facetData.min !== undefined && facetData.max !== undefined:
                     facets.push({
-                        type: FilterTypes.RANGE,
+                        type: Filter_1.FilterTypes.RANGE,
                         identifier: key,
                         min: +facetData.min,
                         max: +facetData.max,
@@ -21,14 +24,14 @@ export class ProductQueryFactory {
                     break;
                 case facetData.terms !== undefined:
                     facets.push({
-                        type: FilterTypes.TERM,
+                        type: Filter_1.FilterTypes.TERM,
                         identifier: key,
                         terms: facetData.terms.map((facetValueData) => facetValueData),
                     });
                     break;
                 case facetData.boolean !== undefined:
                     facets.push({
-                        type: FilterTypes.BOOLEAN,
+                        type: Filter_1.FilterTypes.BOOLEAN,
                         identifier: key,
                         terms: [facetData.boolean],
                     });
@@ -52,10 +55,7 @@ export class ProductQueryFactory {
             var _a;
             if (filter === null || filter === void 0 ? void 0 : filter.field) {
                 const filterValues = [(_a = queryParams.productFilters) === null || _a === void 0 ? void 0 : _a.values[filter.field]] || [];
-                const filterData = {
-                    ...filter,
-                    values: filterValues,
-                };
+                const filterData = Object.assign(Object.assign({}, filter), { values: filterValues });
                 filtersData.push(filterData);
             }
         });
@@ -73,16 +73,14 @@ export class ProductQueryFactory {
         queryParams.categoryFilters.filters.forEach((filter) => {
             if (filter === null || filter === void 0 ? void 0 : filter.field) {
                 const filterValues = [queryParams.categoryFilters.values[filter.field]] || [];
-                const filterData = {
-                    ...filter,
-                    values: filterValues,
-                };
+                const filterData = Object.assign(Object.assign({}, filter), { values: filterValues });
                 filtersData.push(filterData);
             }
         });
         return filtersData;
     }
 }
+exports.ProductQueryFactory = ProductQueryFactory;
 ProductQueryFactory.queryFromParams = (request, config) => {
     var _a, _b, _c, _d;
     let queryParams;
@@ -97,10 +95,7 @@ ProductQueryFactory.queryFromParams = (request, config) => {
         queryParams = request.query;
     }
     if (config === null || config === void 0 ? void 0 : config.configuration) {
-        queryParams = {
-            ...queryParams,
-            ...config.configuration,
-        };
+        queryParams = Object.assign(Object.assign({}, queryParams), config.configuration);
     }
     if (productSkus && productSkus.length > 0)
         queryParams.skus = productSkus;
@@ -130,27 +125,27 @@ ProductQueryFactory.queryFromParams = (request, config) => {
                 continue;
             }
             switch (configFilterData.type) {
-                case FilterFieldTypes.NUMBER:
+                case FilterField_1.FilterFieldTypes.NUMBER:
                     const rangeFilter = {
                         identifier: configFilterData === null || configFilterData === void 0 ? void 0 : configFilterData.field,
-                        type: FilterTypes.RANGE,
+                        type: Filter_1.FilterTypes.RANGE,
                         min: +(configFilterData === null || configFilterData === void 0 ? void 0 : configFilterData.min) || undefined,
                         max: +(configFilterData === null || configFilterData === void 0 ? void 0 : configFilterData.max) || undefined,
                     };
                     filters.push(rangeFilter);
                     break;
-                case FilterFieldTypes.ENUM:
+                case FilterField_1.FilterFieldTypes.ENUM:
                     const enumFilter = {
                         identifier: configFilterData === null || configFilterData === void 0 ? void 0 : configFilterData.field,
-                        type: FilterTypes.TERM,
+                        type: Filter_1.FilterTypes.TERM,
                         terms: configFilterData === null || configFilterData === void 0 ? void 0 : configFilterData.values.map((term) => term),
                     };
                     filters.push(enumFilter);
                     break;
-                case FilterFieldTypes.BOOLEAN:
+                case FilterField_1.FilterFieldTypes.BOOLEAN:
                     const booleanFilter = {
                         identifier: configFilterData === null || configFilterData === void 0 ? void 0 : configFilterData.field,
-                        type: FilterTypes.BOOLEAN,
+                        type: Filter_1.FilterTypes.BOOLEAN,
                         terms: [configFilterData === null || configFilterData === void 0 ? void 0 : configFilterData.values[0]],
                     };
                     filters.push(booleanFilter);
@@ -169,7 +164,7 @@ ProductQueryFactory.queryFromParams = (request, config) => {
         let sortAttribute;
         for (sortAttribute of Object.values(queryParams.sortAttributes)) {
             const key = Object.keys(sortAttribute)[0];
-            sortAttributes[key] = sortAttribute[key] ? sortAttribute[key] : SortOrder.ASCENDING;
+            sortAttributes[key] = sortAttribute[key] ? sortAttribute[key] : ProductQuery_1.SortOrder.ASCENDING;
         }
         productQuery.sortAttributes = sortAttributes;
     }

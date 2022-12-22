@@ -1,5 +1,5 @@
 import * as nodemailer from 'nodemailer';
-import { Account } from '@Types/account/Account';
+import { Account } from '../../../node_modules/@b2bdemo/types/build/account/Account';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 export declare class EmailApi {
     transport: nodemailer.Transporter<SMTPTransport.SentMessageInfo>;

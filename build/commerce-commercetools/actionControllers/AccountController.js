@@ -1,20 +1,34 @@
-import { AccountApi } from '../apis/AccountApi';
-import { CartFetcher } from '../utils/CartFetcher';
-import { getLocale } from '../utils/Request';
-import { EmailApi } from '../apis/EmailApi';
-import { BusinessUnitApi } from '../apis/BusinessUnitApi';
-async function loginAccount(request, actionContext, account, reverify = false) {
-    const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
-    const businessUnitApi = new BusinessUnitApi(actionContext.frontasticContext, getLocale(request));
-    const cart = await CartFetcher.fetchCart(request, actionContext);
-    try {
-        const accountRes = await accountApi.login(account, cart, reverify);
-        const organization = await businessUnitApi.getOrganization(accountRes.accountId);
-        return { account: accountRes, organization };
-    }
-    catch (e) {
-        throw e;
-    }
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.setDefaultShippingAddress = exports.setDefaultBillingAddress = exports.removeAddress = exports.updateAddress = exports.addAddress = exports.update = exports.reset = exports.requestReset = exports.password = exports.logout = exports.login = exports.confirm = exports.resendVerificationEmail = exports.register = exports.getAccount = void 0;
+const AccountApi_1 = require("../apis/AccountApi");
+const CartFetcher_1 = require("../utils/CartFetcher");
+const Request_1 = require("../utils/Request");
+const EmailApi_1 = require("../apis/EmailApi");
+const BusinessUnitApi_1 = require("../apis/BusinessUnitApi");
+function loginAccount(request, actionContext, account, reverify = false) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const accountApi = new AccountApi_1.AccountApi(actionContext.frontasticContext, (0, Request_1.getLocale)(request));
+        const businessUnitApi = new BusinessUnitApi_1.BusinessUnitApi(actionContext.frontasticContext, (0, Request_1.getLocale)(request));
+        const cart = yield CartFetcher_1.CartFetcher.fetchCart(request, actionContext);
+        try {
+            const accountRes = yield accountApi.login(account, cart, reverify);
+            const organization = yield businessUnitApi.getOrganization(accountRes.accountId);
+            return { account: accountRes, organization };
+        }
+        catch (e) {
+            throw e;
+        }
+    });
 }
 function assertIsAuthenticated(request) {
     const account = fetchAccountFromSession(request);
@@ -61,7 +75,7 @@ function mapRequestToAccount(request) {
     }
     return account;
 }
-export const getAccount = async (request, actionContext) => {
+const getAccount = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     const account = fetchAccountFromSession(request);
     if (account === undefined) {
         return {
@@ -77,30 +91,26 @@ export const getAccount = async (request, actionContext) => {
             loggedIn: true,
             account,
         }),
-        sessionData: {
-            ...request.sessionData,
-            account: account,
-        },
+        sessionData: Object.assign(Object.assign({}, request.sessionData), { account: account }),
     };
     return response;
-};
-export const register = async (request, actionContext) => {
-    const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
-    const emailApi = new EmailApi(actionContext.frontasticContext.project.configuration.smtp);
+});
+exports.getAccount = getAccount;
+const register = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
+    const accountApi = new AccountApi_1.AccountApi(actionContext.frontasticContext, (0, Request_1.getLocale)(request));
+    const emailApi = new EmailApi_1.EmailApi(actionContext.frontasticContext.project.configuration.smtp);
     const accountData = mapRequestToAccount(request);
     const host = JSON.parse(request.body).host;
-    const cart = await CartFetcher.fetchCart(request, actionContext).catch(() => undefined);
+    const cart = yield CartFetcher_1.CartFetcher.fetchCart(request, actionContext).catch(() => undefined);
     let response;
     try {
-        const account = await accountApi.create(accountData, cart);
+        const account = yield accountApi.create(accountData, cart);
         if (!account.confirmed)
-            await emailApi.sendVerificationEmail(account, host);
+            yield emailApi.sendVerificationEmail(account, host);
         response = {
             statusCode: 200,
             body: JSON.stringify({ accountId: account.accountId }),
-            sessionData: {
-                ...request.sessionData,
-            },
+            sessionData: Object.assign({}, request.sessionData),
         };
     }
     catch (e) {
@@ -111,34 +121,34 @@ export const register = async (request, actionContext) => {
         };
     }
     return response;
-};
-export const resendVerificationEmail = async (request, actionContext) => {
+});
+exports.register = register;
+const resendVerificationEmail = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     const data = JSON.parse(request.body);
     const host = JSON.parse(request.body).host;
-    const emailApi = new EmailApi(actionContext.frontasticContext.project.configuration.smtp);
+    const emailApi = new EmailApi_1.EmailApi(actionContext.frontasticContext.project.configuration.smtp);
     const reverify = true;
-    const { account } = await loginAccount(request, actionContext, data, reverify);
-    await emailApi.sendVerificationEmail(account, host);
+    const { account } = yield loginAccount(request, actionContext, data, reverify);
+    yield emailApi.sendVerificationEmail(account, host);
     const response = {
         statusCode: 200,
     };
     return response;
-};
-export const confirm = async (request, actionContext) => {
-    const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
+});
+exports.resendVerificationEmail = resendVerificationEmail;
+const confirm = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
+    const accountApi = new AccountApi_1.AccountApi(actionContext.frontasticContext, (0, Request_1.getLocale)(request));
     const accountConfirmBody = JSON.parse(request.body);
-    const account = await accountApi.confirmEmail(accountConfirmBody.token);
+    const account = yield accountApi.confirmEmail(accountConfirmBody.token);
     const response = {
         statusCode: 200,
         body: JSON.stringify(account),
-        sessionData: {
-            ...request.sessionData,
-            account: account,
-        },
+        sessionData: Object.assign(Object.assign({}, request.sessionData), { account: account }),
     };
     return response;
-};
-export const login = async (request, actionContext) => {
+});
+exports.confirm = confirm;
+const login = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     const accountLoginBody = JSON.parse(request.body);
     const loginInfo = {
         email: accountLoginBody.email,
@@ -146,15 +156,12 @@ export const login = async (request, actionContext) => {
     };
     let response;
     try {
-        const { account, organization } = await loginAccount(request, actionContext, loginInfo);
+        const { account, organization } = yield loginAccount(request, actionContext, loginInfo);
         response = {
             statusCode: 200,
             body: JSON.stringify(account),
-            sessionData: {
-                ...request.sessionData,
-                account,
-                organization,
-            },
+            sessionData: Object.assign(Object.assign({}, request.sessionData), { account,
+                organization }),
         };
     }
     catch (e) {
@@ -165,155 +172,132 @@ export const login = async (request, actionContext) => {
         };
     }
     return response;
-};
-export const logout = async (request, actionContext) => {
+});
+exports.login = login;
+const logout = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     return {
         statusCode: 200,
         body: JSON.stringify({}),
-        sessionData: {
-            ...request.sessionData,
-            organization: undefined,
-            account: undefined,
-        },
+        sessionData: Object.assign(Object.assign({}, request.sessionData), { organization: undefined, account: undefined }),
     };
-};
-export const password = async (request, actionContext) => {
+});
+exports.logout = logout;
+const password = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     assertIsAuthenticated(request);
     let account = fetchAccountFromSession(request);
-    const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
+    const accountApi = new AccountApi_1.AccountApi(actionContext.frontasticContext, (0, Request_1.getLocale)(request));
     const accountChangePasswordBody = JSON.parse(request.body);
-    account = await accountApi.updatePassword(account, accountChangePasswordBody.oldPassword, accountChangePasswordBody.newPassword);
+    account = yield accountApi.updatePassword(account, accountChangePasswordBody.oldPassword, accountChangePasswordBody.newPassword);
     return {
         statusCode: 200,
         body: JSON.stringify(account),
-        sessionData: {
-            ...request.sessionData,
-            account,
-        },
+        sessionData: Object.assign(Object.assign({}, request.sessionData), { account }),
     };
-};
-export const requestReset = async (request, actionContext) => {
-    const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
-    const emailApi = new EmailApi(actionContext.frontasticContext.project.configuration.smtp);
+});
+exports.password = password;
+const requestReset = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
+    const accountApi = new AccountApi_1.AccountApi(actionContext.frontasticContext, (0, Request_1.getLocale)(request));
+    const emailApi = new EmailApi_1.EmailApi(actionContext.frontasticContext.project.configuration.smtp);
     const accountRequestResetBody = JSON.parse(request.body);
-    const passwordResetToken = await accountApi.generatePasswordResetToken(accountRequestResetBody.email);
-    await emailApi.sendPasswordResetEmail(passwordResetToken.confirmationToken, accountRequestResetBody.email, accountRequestResetBody.host);
+    const passwordResetToken = yield accountApi.generatePasswordResetToken(accountRequestResetBody.email);
+    yield emailApi.sendPasswordResetEmail(passwordResetToken.confirmationToken, accountRequestResetBody.email, accountRequestResetBody.host);
     return {
         statusCode: 200,
         body: JSON.stringify({}),
-        sessionData: {
-            ...request.sessionData,
-            account: undefined,
-        },
+        sessionData: Object.assign(Object.assign({}, request.sessionData), { account: undefined }),
     };
-};
-export const reset = async (request, actionContext) => {
+});
+exports.requestReset = requestReset;
+const reset = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     const accountResetBody = JSON.parse(request.body);
-    const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
-    const newAccount = await accountApi.resetPassword(accountResetBody.token, accountResetBody.newPassword);
+    const accountApi = new AccountApi_1.AccountApi(actionContext.frontasticContext, (0, Request_1.getLocale)(request));
+    const newAccount = yield accountApi.resetPassword(accountResetBody.token, accountResetBody.newPassword);
     newAccount.password = accountResetBody.newPassword;
-    const { account, organization } = await loginAccount(request, actionContext, newAccount);
+    const { account, organization } = yield loginAccount(request, actionContext, newAccount);
     return {
         statusCode: 200,
         body: JSON.stringify(account),
-        sessionData: {
-            ...request.sessionData,
-            account,
-            organization,
-        },
+        sessionData: Object.assign(Object.assign({}, request.sessionData), { account,
+            organization }),
     };
-};
-export const update = async (request, actionContext) => {
+});
+exports.reset = reset;
+const update = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     assertIsAuthenticated(request);
     let account = fetchAccountFromSession(request);
-    const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
-    account = {
-        ...account,
-        ...mapRequestToAccount(request),
-    };
-    account = await accountApi.update(account);
+    const accountApi = new AccountApi_1.AccountApi(actionContext.frontasticContext, (0, Request_1.getLocale)(request));
+    account = Object.assign(Object.assign({}, account), mapRequestToAccount(request));
+    account = yield accountApi.update(account);
     return {
         statusCode: 200,
         body: JSON.stringify(account),
-        sessionData: {
-            ...request.sessionData,
-            account,
-        },
+        sessionData: Object.assign(Object.assign({}, request.sessionData), { account }),
     };
-};
-export const addAddress = async (request, actionContext) => {
+});
+exports.update = update;
+const addAddress = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     assertIsAuthenticated(request);
     let account = fetchAccountFromSession(request);
     const address = JSON.parse(request.body);
-    const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
-    account = await accountApi.addAddress(account, address);
+    const accountApi = new AccountApi_1.AccountApi(actionContext.frontasticContext, (0, Request_1.getLocale)(request));
+    account = yield accountApi.addAddress(account, address);
     return {
         statusCode: 200,
         body: JSON.stringify(account),
-        sessionData: {
-            ...request.sessionData,
-            account,
-        },
+        sessionData: Object.assign(Object.assign({}, request.sessionData), { account }),
     };
-};
-export const updateAddress = async (request, actionContext) => {
+});
+exports.addAddress = addAddress;
+const updateAddress = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     assertIsAuthenticated(request);
     let account = fetchAccountFromSession(request);
     const address = JSON.parse(request.body);
-    const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
-    account = await accountApi.updateAddress(account, address);
+    const accountApi = new AccountApi_1.AccountApi(actionContext.frontasticContext, (0, Request_1.getLocale)(request));
+    account = yield accountApi.updateAddress(account, address);
     return {
         statusCode: 200,
         body: JSON.stringify(account),
-        sessionData: {
-            ...request.sessionData,
-            account,
-        },
+        sessionData: Object.assign(Object.assign({}, request.sessionData), { account }),
     };
-};
-export const removeAddress = async (request, actionContext) => {
+});
+exports.updateAddress = updateAddress;
+const removeAddress = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     assertIsAuthenticated(request);
     let account = fetchAccountFromSession(request);
     const address = JSON.parse(request.body);
-    const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
-    account = await accountApi.removeAddress(account, address);
+    const accountApi = new AccountApi_1.AccountApi(actionContext.frontasticContext, (0, Request_1.getLocale)(request));
+    account = yield accountApi.removeAddress(account, address);
     return {
         statusCode: 200,
         body: JSON.stringify(account),
-        sessionData: {
-            ...request.sessionData,
-            account,
-        },
+        sessionData: Object.assign(Object.assign({}, request.sessionData), { account }),
     };
-};
-export const setDefaultBillingAddress = async (request, actionContext) => {
+});
+exports.removeAddress = removeAddress;
+const setDefaultBillingAddress = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     assertIsAuthenticated(request);
     let account = fetchAccountFromSession(request);
     const address = JSON.parse(request.body);
-    const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
-    account = await accountApi.setDefaultBillingAddress(account, address);
+    const accountApi = new AccountApi_1.AccountApi(actionContext.frontasticContext, (0, Request_1.getLocale)(request));
+    account = yield accountApi.setDefaultBillingAddress(account, address);
     return {
         statusCode: 200,
         body: JSON.stringify(account),
-        sessionData: {
-            ...request.sessionData,
-            account,
-        },
+        sessionData: Object.assign(Object.assign({}, request.sessionData), { account }),
     };
-};
-export const setDefaultShippingAddress = async (request, actionContext) => {
+});
+exports.setDefaultBillingAddress = setDefaultBillingAddress;
+const setDefaultShippingAddress = (request, actionContext) => __awaiter(void 0, void 0, void 0, function* () {
     assertIsAuthenticated(request);
     let account = fetchAccountFromSession(request);
     const address = JSON.parse(request.body);
-    const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
-    account = await accountApi.setDefaultShippingAddress(account, address);
+    const accountApi = new AccountApi_1.AccountApi(actionContext.frontasticContext, (0, Request_1.getLocale)(request));
+    account = yield accountApi.setDefaultShippingAddress(account, address);
     return {
         statusCode: 200,
         body: JSON.stringify(account),
-        sessionData: {
-            ...request.sessionData,
-            account,
-        },
+        sessionData: Object.assign(Object.assign({}, request.sessionData), { account }),
     };
-};
+});
+exports.setDefaultShippingAddress = setDefaultShippingAddress;
 //# sourceMappingURL=AccountController.js.map

@@ -1,4 +1,7 @@
-export const getConfig = (project, engine, locale) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getConfig = void 0;
+const getConfig = (project, engine, locale) => {
     var _a, _b, _c, _d, _e;
     if (!project.configuration[engine]) {
         throw `Configuration details are not available for ${engine}`;
@@ -11,4 +14,5 @@ export const getConfig = (project, engine, locale) => {
         projectKey: (_e = project.configuration) === null || _e === void 0 ? void 0 : _e[engine].projectKey,
     };
 };
+exports.getConfig = getConfig;
 //# sourceMappingURL=GetConfig.js.map

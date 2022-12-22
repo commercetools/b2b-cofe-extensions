@@ -1,7 +1,11 @@
-export const hasUser = (cart) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isReadyForCheckout = exports.hasAddresses = exports.hasBillingAddress = exports.hasShippingAddress = exports.hasUser = void 0;
+const hasUser = (cart) => {
     return cart.email !== undefined;
 };
-export const hasShippingAddress = (cart) => {
+exports.hasUser = hasUser;
+const hasShippingAddress = (cart) => {
     return (cart.shippingAddress !== undefined &&
         cart.shippingAddress.firstName !== undefined &&
         cart.shippingAddress.lastName !== undefined &&
@@ -9,7 +13,8 @@ export const hasShippingAddress = (cart) => {
         cart.shippingAddress.city !== undefined &&
         cart.shippingAddress.country !== undefined);
 };
-export const hasBillingAddress = (cart) => {
+exports.hasShippingAddress = hasShippingAddress;
+const hasBillingAddress = (cart) => {
     return (cart.billingAddress !== undefined &&
         cart.billingAddress.firstName !== undefined &&
         cart.billingAddress.lastName !== undefined &&
@@ -17,10 +22,13 @@ export const hasBillingAddress = (cart) => {
         cart.billingAddress.city !== undefined &&
         cart.billingAddress.country !== undefined);
 };
-export const hasAddresses = (cart) => {
-    return hasShippingAddress(cart) && hasBillingAddress(cart);
+exports.hasBillingAddress = hasBillingAddress;
+const hasAddresses = (cart) => {
+    return (0, exports.hasShippingAddress)(cart) && (0, exports.hasBillingAddress)(cart);
 };
-export const isReadyForCheckout = (cart) => {
-    return hasUser(cart) && hasAddresses(cart);
+exports.hasAddresses = hasAddresses;
+const isReadyForCheckout = (cart) => {
+    return (0, exports.hasUser)(cart) && (0, exports.hasAddresses)(cart);
 };
+exports.isReadyForCheckout = isReadyForCheckout;
 //# sourceMappingURL=Cart.js.map

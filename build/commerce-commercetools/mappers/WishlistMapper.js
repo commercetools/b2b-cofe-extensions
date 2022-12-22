@@ -1,6 +1,10 @@
-import { ProductRouter } from '../utils/ProductRouter';
-export class WishlistMapper {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WishlistMapper = void 0;
+const ProductRouter_1 = require("../utils/ProductRouter");
+class WishlistMapper {
 }
+exports.WishlistMapper = WishlistMapper;
 WishlistMapper.commercetoolsShoppingListToWishlist = (commercetoolsShoppingList, locale) => {
     var _a, _b, _c;
     return {
@@ -15,11 +19,7 @@ WishlistMapper.commercetoolsShoppingListToWishlist = (commercetoolsShoppingList,
     };
 };
 WishlistMapper.commercetoolsStoreRefToStore = (commercetoolsStoreRef) => {
-    return {
-        id: commercetoolsStoreRef === null || commercetoolsStoreRef === void 0 ? void 0 : commercetoolsStoreRef.id,
-        key: commercetoolsStoreRef === null || commercetoolsStoreRef === void 0 ? void 0 : commercetoolsStoreRef.key,
-        ...commercetoolsStoreRef === null || commercetoolsStoreRef === void 0 ? void 0 : commercetoolsStoreRef.obj,
-    };
+    return Object.assign({ id: commercetoolsStoreRef === null || commercetoolsStoreRef === void 0 ? void 0 : commercetoolsStoreRef.id, key: commercetoolsStoreRef === null || commercetoolsStoreRef === void 0 ? void 0 : commercetoolsStoreRef.key }, commercetoolsStoreRef === null || commercetoolsStoreRef === void 0 ? void 0 : commercetoolsStoreRef.obj);
 };
 WishlistMapper.commercetoolsLineItemToLineItem = (commercetoolsLineItem, locale) => {
     var _a, _b;
@@ -34,7 +34,7 @@ WishlistMapper.commercetoolsLineItemToLineItem = (commercetoolsLineItem, locale)
             images: (_b = (_a = commercetoolsLineItem.variant) === null || _a === void 0 ? void 0 : _a.images) === null || _b === void 0 ? void 0 : _b.map((image) => image.url),
         },
     };
-    lineItem._url = ProductRouter.generateUrlFor(lineItem);
+    lineItem._url = ProductRouter_1.ProductRouter.generateUrlFor(lineItem);
     return lineItem;
 };
 WishlistMapper.wishlistToCommercetoolsShoppingListDraft = (accountId, storeKey, wishlist, locale) => {
