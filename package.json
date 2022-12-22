@@ -9,7 +9,7 @@
         "build/**/*"
     ],
     "scripts": {
-        "build": "rm -rf build && tsc && resolve-tspaths",
+        "build": "rm -rf build && tsc",
         "ts-watch": "tsc -watch --noEmit",
         "lint": "eslint .",
         "lint:fix": "eslint --fix .",
@@ -56,7 +56,6 @@
         "jest": "^27.5.1",
         "node-fetch": "^2.6.7",
         "prettier": "^2.4.1",
-        "resolve-tspaths": "^0.8.3",
         "ts-jest": "^27.1.3",
         "ts-loader": "^7.0.5"
     }

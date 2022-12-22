@@ -1,0 +1,31 @@
+import { Cart } from '@Types/cart/Cart';
+import { BaseAddress as CommercetoolsAddress, Cart as CommercetoolsCart, DiscountCodeInfo as CommercetoolsDiscountCodeInfo, DiscountedLineItemPriceForQuantity as CommercetoolsDiscountedLineItemPriceForQuantity, DiscountedLineItemPortion as CommercetoolsDiscountedLineItemPortion, LineItem as CommercetoolsLineItem, Order as CommercetoolsOrder, Payment as CommercetoolsPayment, PaymentInfo as CommercetoolsPaymentInfo, ShippingInfo as CommercetoolsShippingInfo, ShippingMethod as CommercetoolsShippingMethod, TaxedPrice as CommercetoolsTaxedPrice, ZoneRate as CommercetoolsZoneRate, ReturnInfo as CommercetoolsReturnInfo } from '@commercetools/platform-sdk';
+import { LineItem } from '@Types/cart/LineItem';
+import { Address } from '@Types/account/Address';
+import { Order, ReturnInfo } from '@Types/cart/Order';
+import { Locale } from '../Locale';
+import { ShippingMethod } from '@Types/cart/ShippingMethod';
+import { ShippingRate } from '@Types/cart/ShippingRate';
+import { ShippingInfo } from '@Types/cart/ShippingInfo';
+import { Payment } from '@Types/cart/Payment';
+import { Tax } from '@Types/cart/Tax';
+import { Discount } from '@Types/cart/Discount';
+export declare class CartMapper {
+    static commercetoolsCartToCart: (commercetoolsCart: CommercetoolsCart, locale: Locale, config?: Record<string, string>) => Cart;
+    static commercetoolsLineItemsToLineItems: (commercetoolsLineItems: CommercetoolsLineItem[], locale: Locale) => LineItem[];
+    static commercetoolsAddressToAddress: (commercetoolsAddress: CommercetoolsAddress) => Address;
+    static addressToCommercetoolsAddress: (address: Address) => CommercetoolsAddress;
+    static commercetoolsOrderToOrder: (commercetoolsOrder: CommercetoolsOrder, locale: Locale, config?: Record<string, string>) => Order;
+    static commercetoolsShippingInfoToShippingInfo: (commercetoolsShippingInfo: CommercetoolsShippingInfo | undefined, locale: Locale) => ShippingInfo | undefined;
+    static commercetoolsReturnInfoToReturnInfo: (commercetoolsReturnInfo: CommercetoolsReturnInfo[]) => ReturnInfo[];
+    static commercetoolsShippingMethodToShippingMethod: (commercetoolsShippingMethod: CommercetoolsShippingMethod, locale: Locale) => ShippingMethod;
+    static commercetoolsZoneRatesToRates: (commercetoolsZoneRates: CommercetoolsZoneRate[] | undefined, locale: Locale) => ShippingRate[] | undefined;
+    static commercetoolsPaymentInfoToPayments: (commercetoolsPaymentInfo: CommercetoolsPaymentInfo | undefined, locale: Locale) => Payment[];
+    static commercetoolsPaymentToPayment: (commercetoolsPayment: CommercetoolsPayment, locale: Locale) => Payment;
+    static commercetoolsDiscountCodesInfoToDiscountCodes: (commercetoolsDiscountCodesInfo: CommercetoolsDiscountCodeInfo[] | undefined, locale: Locale) => Discount[];
+    static commercetoolsDiscountCodeInfoToDiscountCode: (commercetoolsDiscountCodeInfo: CommercetoolsDiscountCodeInfo, locale: Locale) => Discount;
+    static commercetoolsDiscountedPricesPerQuantityToDiscountTexts: (commercetoolsDiscountedLineItemPricesForQuantity: CommercetoolsDiscountedLineItemPriceForQuantity[] | undefined, locale: Locale) => string[];
+    static commercetoolsDiscountedPricesPerQuantityToDiscounts: (commercetoolsDiscountedLineItemPricesForQuantity: CommercetoolsDiscountedLineItemPriceForQuantity[] | undefined, locale: Locale) => Discount[];
+    static commercetoolsDiscountedLineItemPortionToDiscount: (commercetoolsDiscountedLineItemPortion: CommercetoolsDiscountedLineItemPortion, locale: Locale) => Discount;
+    static commercetoolsTaxedPriceToTaxed: (commercetoolsTaxedPrice: CommercetoolsTaxedPrice | undefined, locale: Locale) => Tax | undefined;
+}
