@@ -35,22 +35,6 @@ type AccountChangePasswordBody = {
   newPassword: string;
 };
 
-async function mockAPI(request: Request, actionContext: ActionContext, account: Account, reverify = false) {
-  const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
-  const businessUnitApi = new BusinessUnitApi(actionContext.frontasticContext, getLocale(request));
-
-  const cart = await CartFetcher.fetchCart(request, actionContext);
-
-  try {
-    const accountRes = await accountApi.login(account, cart, reverify);
-    const organization = await businessUnitApi.getOrganization(accountRes.accountId);
-
-    return { account: accountRes, organization };
-  } catch (e) {
-    throw e;
-  }
-}
-
 async function loginAccount(request: Request, actionContext: ActionContext, account: Account, reverify = false) {
   const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
   const businessUnitApi = new BusinessUnitApi(actionContext.frontasticContext, getLocale(request));
