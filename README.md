@@ -13,6 +13,10 @@ You can read a bit more about `git subtree` in [here](https://www.atlassian.com/
 #### Steps
 1. Remove `commerce-commercetools/` dir from `packages/<name>/backend`
 1. Remove `types/` dir from `packages/<name>/`
+1. Commit changes
+    ```
+    git add . && git commit -m"remove built-in extensions and types" 
+    ```
 1. Add `extensions` remote to your project
     ```
     git remote add extensions git@github.com:commercetools/b2b-demo-extensions.git
