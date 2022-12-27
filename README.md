@@ -109,10 +109,24 @@ You can read a bit more about `git subtree` in [here](https://www.atlassian.com/
     }
 
     ```
-1. Add changes to repo
+1. Update imports in backend
+
+    Some imports in `packages/<name>/backend` were using relative paths to access apis. Update these paths using the new `@Extensions` alias
+    ```ts
+    packages/<name>/backend/payment-adyen/actionControllers/AdyenController.ts
+    
+    ...
+    import { CartApi } from '@Extensions/commerce-commercetools/apis/CartApi';
+    import { EmailApi } from '@Extensions/commerce-commercetools/apis/EmailApi';
+    import { isReadyForCheckout } from '@Extensions/commerce-commercetools/utils/Cart';
+    ...
+    ```
+3. Add changes to repo
     ```
     git commit -m"<commit message>" && git push
     ```
+1. `frontastic install`    
+
 ### Clone a project already using this repo
 1. Clone the repo
     ```
