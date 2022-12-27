@@ -6,7 +6,7 @@ import {
   Quote as CommercetoolsQuote,
   CartReference,
 } from '@commercetools/platform-sdk';
-import { Locale } from 'commerce-commercetools/Locale';
+import { Locale } from '../Locale';
 import { LineItem } from '@Types/cart/LineItem';
 import { CartMapper } from './CartMapper';
 import { QuoteRequest } from '@Types/quotes/QuoteRequest';
