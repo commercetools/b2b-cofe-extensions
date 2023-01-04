@@ -28,7 +28,7 @@
         "core-js": "^3.20.0",
         "nodemailer": "^6.7.3",
         "performance-now": "^2.1.0",
-        "qs": "^6.10.1",
+        "qs": "^6.10.3",
         "typescript": "^4.3.5"
     },
     "devDependencies": {
