@@ -83,6 +83,7 @@ export const setMe: ActionHook = async (request: Request, actionContext: ActionC
       ...request.sessionData,
       cartId,
       organization,
+      rootCategoryId: store?.custom?.fields?.rootCategory?.id,
     },
   };
 

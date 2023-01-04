@@ -97,7 +97,7 @@ export const queryCategories: ActionHook = async (request: Request, actionContex
 export const searchableAttributes: ActionHook = async (request: Request, actionContext: ActionContext) => {
   const productApi = new ProductApi(actionContext.frontasticContext, getLocale(request));
 
-  const result = await productApi.getSearchableAttributes();
+  const result = await productApi.getSearchableAttributes(request?.sessionData?.rootCategoryId);
 
   const response: Response = {
     statusCode: 200,

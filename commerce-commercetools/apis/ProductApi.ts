@@ -63,6 +63,10 @@ export class ProductApi extends BaseApi {
           filterQuery.push(`categories.id:subtree("${productQuery.category}")`);
         }
 
+        if (productQuery.rootCategoryId) {
+          filterQuery.push(`categories.id:subtree("${productQuery.rootCategoryId}")`);
+        }
+
         if (productQuery.filters !== undefined) {
           productQuery.filters.forEach((filter) => {
             switch (filter.type) {
@@ -170,7 +174,7 @@ export class ProductApi extends BaseApi {
     }
   };
 
-  getSearchableAttributes: () => Promise<FilterField[]> = async () => {
+  getSearchableAttributes: (rootCategoryId?: string) => Promise<FilterField[]> = async (rootCategoryId?) => {
     try {
       const locale = await this.getCommercetoolsLocal();
 
@@ -182,7 +186,7 @@ export class ProductApi extends BaseApi {
         field: 'categoryId',
         type: FilterFieldTypes.ENUM,
         label: 'Category ID',
-        values: await this.queryCategories({ limit: 250 }).then((result) => {
+        values: await this.queryCategories({ rootCategoryId, limit: 250 }).then((result) => {
           return (result.items as Category[]).map((item) => {
             return {
               value: item.categoryId,
@@ -210,10 +214,16 @@ export class ProductApi extends BaseApi {
     }
   };
 
-  getNavigationCategories: () => Promise<Category[]> = async () => {
-    const { items }: { items: any[] } = await this.queryCategories({ limit: 500 });
+  getNavigationCategories: (rootCategoryId: string) => Promise<Category[]> = async (rootCategoryId) => {
+    const { items }: { items: any[] } = await this.queryCategories({ rootCategoryId, limit: 500 });
 
-    const categories: Category[] = items.filter((item: Category) => !item.ancestors?.length);
+    let categories: Category[] = [];
+    if (rootCategoryId) {
+      categories = items.filter((item: Category) => item.parentId == rootCategoryId);
+    } else {
+      categories = items.filter((item: Category) => !item.ancestors?.length);
+    }
+
     const subCategories: Category[] = items
       .filter((item: Category) => !!item.ancestors?.length)
       .sort((a, b) => b.depth - a.depth);
@@ -253,6 +263,9 @@ export class ProductApi extends BaseApi {
         where.push(`parent(id="${categoryQuery.parentId}")`);
       }
 
+      if (categoryQuery.rootCategoryId) {
+        where.push(`ancestors(id="${categoryQuery.rootCategoryId}")`);
+      }
       const methodArgs = {
         queryArgs: {
           limit: limit,

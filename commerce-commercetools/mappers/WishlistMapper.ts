@@ -1,5 +1,5 @@
 import { Wishlist, WishlistDraft } from '@Types/wishlist/Wishlist';
-import { ShoppingList, ShoppingListLineItem } from '@commercetools/platform-sdk';
+import { CustomFields, ShoppingList, ShoppingListLineItem } from '@commercetools/platform-sdk';
 import { ShoppingListDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/shopping-list';
 import { Locale } from '../Locale';
 import { LineItem } from '@Types/wishlist/LineItem';
@@ -7,7 +7,11 @@ import { ProductRouter } from '../utils/ProductRouter';
 import { Store, StoreKeyReference } from '@Types/store/store';
 
 export class WishlistMapper {
-  static commercetoolsShoppingListToWishlist = (commercetoolsShoppingList: ShoppingList, locale: Locale): Wishlist => {
+  static commercetoolsShoppingListToWishlist = (
+    commercetoolsShoppingList: ShoppingList,
+    locale: Locale,
+    config?: Record<string, string>,
+  ): Wishlist => {
     return {
       wishlistId: commercetoolsShoppingList.id,
       wishlistVersion: commercetoolsShoppingList.version.toString(),
@@ -19,7 +23,18 @@ export class WishlistMapper {
         WishlistMapper.commercetoolsLineItemToLineItem(lineItem, locale),
       ),
       store: WishlistMapper.commercetoolsStoreRefToStore(commercetoolsShoppingList.store),
+      shared: WishlistMapper.commercetoolsCustomToShared(commercetoolsShoppingList.custom, config),
     };
+  };
+
+  private static commercetoolsCustomToShared = (
+    commercetoolsCustom: CustomFields,
+    config?: Record<string, string>,
+  ): string[] => {
+    if (!config) {
+      return [];
+    }
+    return commercetoolsCustom?.fields?.[config.wishlistSharingCustomField];
   };
 
   private static commercetoolsStoreRefToStore = (commercetoolsStoreRef: StoreKeyReference): Store => {

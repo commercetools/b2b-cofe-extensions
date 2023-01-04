@@ -152,14 +152,14 @@ export class BusinessUnitApi extends BaseApi {
     try {
       const storeApi = new StoreApi(this.frontasticContext, this.locale);
       const allStores = await storeApi.query();
-      const response = await this.query(`associates(customer(id="${accountId}"))`, 'associates[*].customer');
-      const highestNodes = this.getHighestNodesWithAssociation(response.results, accountId);
+      const results = await this.getAssociatedBusinessUnits(accountId);
+      const highestNodes = this.getHighestNodesWithAssociation(results, accountId);
 
       if (highestNodes.length) {
         const bu = await this.setStoresByBusinessUnit(highestNodes[0] as CommercetoolsBusinessUnit);
         return mapBusinessUnitToBusinessUnit(bu as CommercetoolsBusinessUnit, allStores, accountId);
       }
-      return response;
+      return results;
     } catch (e) {
       throw e;
     }
@@ -218,17 +218,21 @@ export class BusinessUnitApi extends BaseApi {
     return businessUnit;
   };
 
+  getAssociatedBusinessUnits: (accoundId: string) => Promise<BusinessUnit[]> = async (accountId: string) => {
+    const response = await this.query(`associates(customer(id="${accountId}"))`, 'associates[*].customer');
+    return response.results;
+  };
+
   getTree: (accoundId: string) => Promise<BusinessUnit[]> = async (accountId: string) => {
     let tree: BusinessUnit[] = [];
     const storeApi = new StoreApi(this.frontasticContext, this.locale);
     const allStores = await storeApi.query();
     if (accountId) {
-      const response = await this.query(`associates(customer(id="${accountId}"))`, 'associates[*].customer');
-      tree = this.getHighestNodesWithAssociation(response.results, accountId, true).map((bu) => ({
+      const results = await this.getAssociatedBusinessUnits(accountId);
+      tree = this.getHighestNodesWithAssociation(results, accountId, true).map((bu) => ({
         ...bu,
         parentUnit: null,
       }));
-
       if (tree.length) {
         // get the whole organization nodes
         const { results } = await this.query(

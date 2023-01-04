@@ -32,6 +32,8 @@ export class WishlistApi extends BaseApi {
   getForAccount = async (accountId: string) => {
     try {
       const locale = await this.getCommercetoolsLocal();
+      const config = this.frontasticContext?.project?.configuration?.wishlistSharing;
+
       const response = await this.getApiForProject()
         .shoppingLists()
         .get({
@@ -43,7 +45,7 @@ export class WishlistApi extends BaseApi {
         .execute();
 
       return response.body.results.map((shoppingList) =>
-        WishlistMapper.commercetoolsShoppingListToWishlist(shoppingList, locale),
+        WishlistMapper.commercetoolsShoppingListToWishlist(shoppingList, locale, config),
       );
     } catch (error) {
       throw new Error(`Get wishlist for account failed: ${error}`);
@@ -71,9 +73,36 @@ export class WishlistApi extends BaseApi {
     }
   };
 
+  getForBusinessUnit = async (businessUnitKey: string, accountId: string): Promise<Wishlist[]> => {
+    try {
+      const locale = await this.getCommercetoolsLocal();
+      const config = this.frontasticContext?.project?.configuration?.wishlistSharing;
+      const response = await this.getApiForProject()
+        .shoppingLists()
+        .get({
+          queryArgs: {
+            where: [
+              `custom(fields(${config.wishlistSharingCustomField} contains any ("${businessUnitKey}")))`,
+              `customer(id!="${accountId}")`,
+            ],
+            expand: expandVariants,
+          },
+        })
+        .execute();
+
+      return response.body.results.map((shoppingList) =>
+        WishlistMapper.commercetoolsShoppingListToWishlist(shoppingList, locale),
+      );
+    } catch (error) {
+      throw new Error(`Get wishlist for BU failed: ${error}`);
+    }
+  };
+
   getByIdForAccount = async (wishlistId: string, accountId: string) => {
     try {
       const locale = await this.getCommercetoolsLocal();
+      const config = this.frontasticContext?.project?.configuration?.wishlistSharing;
+
       const response = await this.getApiForProject()
         .shoppingLists()
         .withId({ ID: wishlistId })
@@ -85,7 +114,7 @@ export class WishlistApi extends BaseApi {
         })
         .execute();
 
-      return WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
+      return WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale, config);
     } catch (error) {
       // @ts-ignore
       throw error;
@@ -139,6 +168,51 @@ export class WishlistApi extends BaseApi {
       return WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
     } catch (error) {
       throw new Error(`Add to wishlist failed: ${error}`);
+    }
+  };
+
+  share = async (wishlist: Wishlist, businessUnitKey: string) => {
+    try {
+      const locale = await this.getCommercetoolsLocal();
+      const config = this.frontasticContext?.project?.configuration?.wishlistSharing;
+
+      // @ts-ignore
+      let currentSharedBUs: string[] = wishlist?.shared || [];
+
+      if (currentSharedBUs.includes(businessUnitKey)) {
+        currentSharedBUs = currentSharedBUs.filter((item) => item !== businessUnitKey);
+      } else {
+        currentSharedBUs.push(businessUnitKey);
+      }
+
+      const response = await this.getApiForProject()
+        .shoppingLists()
+        .withId({ ID: wishlist.wishlistId })
+        .post({
+          body: {
+            version: +wishlist.wishlistVersion,
+            actions: [
+              {
+                action: 'setCustomType',
+                type: {
+                  key: config.wishlistSharingCustomType,
+                  typeId: 'type',
+                },
+                fields: {
+                  [config.wishlistSharingCustomField]: currentSharedBUs,
+                },
+              },
+            ],
+          },
+          queryArgs: {
+            expand: expandVariants,
+          },
+        })
+        .execute();
+
+      return WishlistMapper.commercetoolsShoppingListToWishlist(response.body, locale);
+    } catch (error) {
+      throw error;
     }
   };
 

@@ -54,6 +54,9 @@ export class ProductQueryFactory {
      */
     productQuery.category = queryParams?.category || undefined;
 
+    /* Root category (for store selection) */
+    productQuery.rootCategoryId = request.sessionData?.rootCategoryId;
+
     /**
      * Map productIds
      */
