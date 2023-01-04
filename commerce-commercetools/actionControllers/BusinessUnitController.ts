@@ -8,6 +8,7 @@ import { Store, StoreKeyReference } from '@Types/store/store';
 import { CustomerApi } from '../apis/CustomerApi';
 import { WithError } from '@Types/general/WithError';
 import { CartApi } from '../apis/CartApi';
+import { StoreApi } from '../apis/StoreApi';
 
 type ActionHook = (request: Request, actionContext: ActionContext) => Promise<Response>;
 
@@ -41,9 +42,11 @@ export const getMe: ActionHook = async (request: Request, actionContext: ActionC
 
 export const setMe: ActionHook = async (request: Request, actionContext: ActionContext) => {
   const businessUnitApi = new BusinessUnitApi(actionContext.frontasticContext, getLocale(request));
+  const storeApi = new StoreApi(actionContext.frontasticContext, getLocale(request));
   const data = JSON.parse(request.body);
 
   const businessUnit = await businessUnitApi.get(data.key, request.sessionData?.account?.accountId);
+  const store = businessUnit.stores?.[0]?.key ? await storeApi.get(businessUnit.stores[0].key) : undefined;
   const organization = await businessUnitApi.getOrganizationByBusinessUnit(businessUnit);
   const response: Response = {
     statusCode: 200,
@@ -51,6 +54,7 @@ export const setMe: ActionHook = async (request: Request, actionContext: ActionC
     sessionData: {
       ...request.sessionData,
       organization,
+      rootCategoryId: store?.custom?.fields?.rootCategory?.id,
     },
   };
 

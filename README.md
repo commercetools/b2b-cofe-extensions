@@ -154,8 +154,9 @@ Use `git commit` and `git push`
 1. Commit the changes to the `origin` of your repo
 1. Commit the changes to `extensions`
     ```
-    git subtree push --prefix packages/<name>/extensions extensions master
+    git subtree push --prefix packages/<name>/extensions extensions <new-branch-name>
     ```
+    Create a Pull Request from the <new-branch-name> to master in git@github.com:commercetools/b2b-cofe-extensions.git
 
 ## Extending CoFe without updating `extensions` repo
 1. Create `packages/<name>/backend/commerce/index.ts` and create/override new extensions as needed.

@@ -75,6 +75,29 @@ export const getAllWishlists: ActionHook = async (request, actionContext) => {
   };
 };
 
+export const getSharedWishlists: ActionHook = async (request, actionContext) => {
+  const businessUnit = request.sessionData?.organization?.businessUnit?.key;
+  const config = actionContext.frontasticContext?.project?.configuration?.wishlistSharing;
+  const account = fetchAccountFromSessionEnsureLoggedIn(request);
+
+  if (!businessUnit || !config?.wishlistSharingCustomType || !config?.wishlistSharingCustomField) {
+    return {
+      statusCode: 400,
+      sessionData: request.sessionData,
+      error: new Error('No context or custom field'),
+      errorCode: 400,
+    };
+  }
+  const wishlistApi = getWishlistApi(request, actionContext);
+  const wishlists = await wishlistApi.getForBusinessUnit(businessUnit, account.accountId);
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(wishlists),
+    sessionData: request.sessionData,
+  };
+};
+
 export const getWishlist: ActionHook = async (request, actionContext) => {
   const wishlistApi = getWishlistApi(request, actionContext);
   try {
@@ -111,6 +134,32 @@ export const createWishlist: ActionHook = async (request, actionContext) => {
     body: JSON.stringify(wishlistRes),
     sessionData: request.sessionData,
   };
+};
+
+export const share: ActionHook = async (request, actionContext) => {
+  const wishlistApi = getWishlistApi(request, actionContext);
+  const config = actionContext.frontasticContext?.project?.configuration?.wishlistSharing;
+  if (!config?.wishlistSharingCustomType || !config?.wishlistSharingCustomField) {
+    return {
+      statusCode: 400,
+      sessionData: request.sessionData,
+      error: new Error('No context or custom field'),
+      errorCode: 400,
+    };
+  }
+  const wishlist = await fetchWishlist(request, wishlistApi);
+
+  try {
+    const wishlistRes = await wishlistApi.share(wishlist, request.query['business-unit-key']);
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify(wishlistRes),
+      sessionData: request.sessionData,
+    };
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const addToWishlist: ActionHook = async (request, actionContext) => {

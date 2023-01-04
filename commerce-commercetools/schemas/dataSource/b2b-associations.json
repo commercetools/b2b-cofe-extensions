@@ -1,0 +1,7 @@
+{
+  "customDataSourceType": "b2b/associations",
+  "name": "B2B Associations",
+  "category": "Session",
+  "icon": "account_balance",
+  "schema": []
+}
