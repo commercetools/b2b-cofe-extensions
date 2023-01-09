@@ -1,11 +1,12 @@
 import { BaseApi } from './BaseApi';
 import { Store } from '@Types/store/store';
-import { StoreDraft, Store as CommercetoolsStore } from '@commercetools/platform-sdk';
+import { StoreDraft } from '@commercetools/platform-sdk';
 import { mapCommercetoolsStoreToStore } from '../mappers/StoreMappers';
 
-const convertStoreToBody = (store: Store, locale: string): StoreDraft => {
+const convertStoreToBody = (store: StoreDraft, locale: string): StoreDraft => {
   return {
     ...store,
+    // @ts-ignore
     name: {
       [locale]: store.name,
     },
@@ -13,7 +14,7 @@ const convertStoreToBody = (store: Store, locale: string): StoreDraft => {
 };
 
 export class StoreApi extends BaseApi {
-  create: (store: Store) => Promise<any> = async (store: Store) => {
+  create: (store: StoreDraft) => Promise<any> = async (store: StoreDraft) => {
     const locale = await this.getCommercetoolsLocal();
     const body = convertStoreToBody(store, locale.language);
 
@@ -30,8 +31,8 @@ export class StoreApi extends BaseApi {
         .catch((error) => {
           throw error;
         });
-    } catch {
-      throw '';
+    } catch (error) {
+      throw error;
     }
   };
 

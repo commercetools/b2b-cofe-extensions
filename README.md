@@ -204,4 +204,5 @@ wishlistSharing:
 storeContext:
     storeCustomType: b2bstore
     rootCategoryCustomField: rootCategory
+    defaultRootCategoryId: <id>
 ```

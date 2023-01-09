@@ -5,6 +5,7 @@ import { StoreApi } from '../apis/StoreApi';
 import { CartApi } from '../apis/CartApi';
 import { getLocale } from '../utils/Request';
 import { BusinessUnitApi } from '../apis/BusinessUnitApi';
+import { StoreDraft } from '@commercetools/platform-sdk';
 
 type ActionHook = (request: Request, actionContext: ActionContext) => Promise<Response>;
 
@@ -13,6 +14,7 @@ type AccountRegisterBody = {
     email?: string;
     confirmed?: boolean;
     company?: string;
+    fieldOfBusiness?: string;
   };
   parentBusinessUnit: string;
 };
@@ -24,15 +26,27 @@ export const create: ActionHook = async (request: Request, actionContext: Action
 
   const data = await mapRequestToStore(request, actionContext, storeApi);
 
-  const store = await storeApi.create(data);
+  try {
+    const store = await storeApi.create(data);
 
-  const response: Response = {
-    statusCode: 200,
-    body: JSON.stringify(store),
-    sessionData: request.sessionData,
-  };
+    const response: Response = {
+      statusCode: 200,
+      body: JSON.stringify(store),
+      sessionData: request.sessionData,
+    };
 
-  return response;
+    return response;
+  } catch (error) {
+    const response: Response = {
+      statusCode: 400,
+      sessionData: request.sessionData,
+      // @ts-ignore
+      error: error.message,
+      errorCode: 400,
+    };
+
+    return response;
+  }
 };
 
 export const query: ActionHook = async (request: Request, actionContext: ActionContext) => {
@@ -110,12 +124,20 @@ async function getParentSupplyChannels(parentStores: any): Promise<ChannelResour
   }, []);
 }
 
-async function mapRequestToStore(request: Request, actionContext: ActionContext, storeApi: StoreApi): Promise<Store> {
+async function mapRequestToStore(
+  request: Request,
+  actionContext: ActionContext,
+  storeApi: StoreApi,
+): Promise<StoreDraft> {
   const storeBody: AccountRegisterBody = JSON.parse(request.body);
   const key = storeBody.account.company.toLowerCase().replace(/ /g, '_');
   const parentBusinessUnit = storeBody.parentBusinessUnit;
+  const fieldOfBusiness = storeBody.account.fieldOfBusiness;
+  const config = actionContext.frontasticContext?.project?.configuration?.storeContext;
+
   let supplyChannels: ChannelResourceIdentifier[] = [];
   let distributionChannels: ChannelResourceIdentifier[] = [];
+
   if (parentBusinessUnit) {
     const businessUnitApi = new BusinessUnitApi(actionContext.frontasticContext, getLocale(request));
     const businessUnit = await businessUnitApi.get(parentBusinessUnit);
@@ -140,14 +162,29 @@ async function mapRequestToStore(request: Request, actionContext: ActionContext,
     });
   }
 
-  const account: Store = {
+  const store: StoreDraft = {
     key: `store_${parentBusinessUnit ? `${parentBusinessUnit}_` : ''}${key}`,
+    // @ts-ignore
     name: storeBody.account.company,
-    // @ts-ignore
     distributionChannels,
-    // @ts-ignore
     supplyChannels,
   };
 
-  return account;
+  if (config?.storeCustomType && config?.rootCategoryCustomField && config?.defaultRootCategoryId) {
+    // @ts-ignore
+    store.custom = {
+      type: {
+        key: config.storeCustomType,
+        typeId: 'type',
+      },
+      fields: {
+        [config.rootCategoryCustomField]: {
+          typeId: 'category',
+          id: fieldOfBusiness ? fieldOfBusiness : config.defaultRootCategoryId,
+        },
+      },
+    };
+  }
+
+  return store;
 }
