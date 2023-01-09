@@ -74,6 +74,8 @@ export const setMe: ActionHook = async (request: Request, actionContext: ActionC
   };
 
   const cart = await cartApi.getForUser(request.sessionData?.account, organization);
+  const config = actionContext.frontasticContext?.project?.configuration?.storeContext;
+
   const cartId = cart.cartId;
 
   const response: Response = {
@@ -83,7 +85,7 @@ export const setMe: ActionHook = async (request: Request, actionContext: ActionC
       ...request.sessionData,
       cartId,
       organization,
-      rootCategoryId: store?.custom?.fields?.rootCategory?.id,
+      rootCategoryId: store?.custom?.fields?.[config?.rootCategoryCustomField]?.id,
     },
   };
 

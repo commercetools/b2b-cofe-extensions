@@ -184,16 +184,24 @@ Use `git commit` and `git push`
     ```
 
 ## variables to set
+In order to use specific features you can set the following variables in `project.yml` file
 1. project.yml`
-```
+```yml
 smtp:
     ...
+// to enable pre-buy feature, a custom type is set on the store that distribute pre-buy products and 
+// a custom type is set on the cart/order object to distinguish regular orders from pre-buys
 preBuy:
-    storeCustomType: lulu-store // name of the custom type on the store
+    storeCustomType: b2bstore // name of the custom type on the store
     orderCustomType: lulu-order // name of the custom type on the cart/order
     storeCustomField: is-pre-buy-store // name of the field in the custome type. boolean field
     orderCustomField: is-created-from-pre-buy-store // boolean field in the custom type
+// share purchase lists between associates in a business unit
 wishlistSharing:
     wishlistSharingCustomType: b2b-list
     wishlistSharingCustomField: business-unit-keys // string(set) list of business units that can access this wishlist
+// to enable custom navigation for specific stores and filter products based on the rootCategory
+storeContext:
+    storeCustomType: b2bstore
+    rootCategoryCustomField: rootCategory
 ```
