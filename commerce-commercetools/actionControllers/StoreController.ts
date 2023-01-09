@@ -14,7 +14,7 @@ type AccountRegisterBody = {
     email?: string;
     confirmed?: boolean;
     company?: string;
-    fieldOfBusiness?: string;
+    rootCategoryId?: string;
   };
   parentBusinessUnit: string;
 };
@@ -132,7 +132,7 @@ async function mapRequestToStore(
   const storeBody: AccountRegisterBody = JSON.parse(request.body);
   const key = storeBody.account.company.toLowerCase().replace(/ /g, '_');
   const parentBusinessUnit = storeBody.parentBusinessUnit;
-  const fieldOfBusiness = storeBody.account.fieldOfBusiness;
+  const rootCategoryId = storeBody.account.rootCategoryId;
   const config = actionContext.frontasticContext?.project?.configuration?.storeContext;
 
   let supplyChannels: ChannelResourceIdentifier[] = [];
@@ -180,7 +180,7 @@ async function mapRequestToStore(
       fields: {
         [config.rootCategoryCustomField]: {
           typeId: 'category',
-          id: fieldOfBusiness ? fieldOfBusiness : config.defaultRootCategoryId,
+          id: rootCategoryId ? rootCategoryId : config.defaultRootCategoryId,
         },
       },
     };

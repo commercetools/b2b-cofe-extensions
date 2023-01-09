@@ -271,7 +271,7 @@ export class ProductApi extends BaseApi {
           limit: limit,
           offset: this.getOffsetFromCursor(categoryQuery.cursor),
           where: where.length > 0 ? where : undefined,
-          sort: 'orderHint'
+          sort: 'orderHint',
         },
       };
 
