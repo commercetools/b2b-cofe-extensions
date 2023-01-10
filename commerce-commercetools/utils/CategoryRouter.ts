@@ -15,7 +15,7 @@ export class CategoryRouter {
     return false;
   }
   static identifyFrom(request: Request) {
-    if (getPath(request)?.match(/[^\/]+/)) {
+    if (getPath(request)?.match(/.+/)) {
       return true;
     }
 

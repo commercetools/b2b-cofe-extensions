@@ -1,8 +1,0 @@
-{
-  "dynamicPageType": "b2b/home",
-  "name": "Home Page",
-  "category": "Home",
-  "icon": "home",
-  "dataSourceType": "frontastic/empty",
-  "isMultiple": true
-}
