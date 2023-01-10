@@ -204,5 +204,5 @@ wishlistSharing:
 storeContext:
     storeCustomType: b2bstore
     rootCategoryCustomField: rootCategory
-    defaultRootCategoryId: <id>
+    defaultRootCategoryId: <id> // id of the default root category for all new stores
 ```
