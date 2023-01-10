@@ -21,6 +21,7 @@ export const mapBusinessUnitToBusinessUnit = (
 
 const trimBusinessUnit = (businessUnit: BusinessUnit): BusinessUnit => {
   return {
+    topLevelUnit: businessUnit.topLevelUnit,
     key: businessUnit.key,
     stores: businessUnit.stores,
     name: businessUnit.name,
