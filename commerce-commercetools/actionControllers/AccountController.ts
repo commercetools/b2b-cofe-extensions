@@ -215,6 +215,7 @@ export const confirm: ActionHook = async (request: Request, actionContext: Actio
 
 export const login: ActionHook = async (request: Request, actionContext: ActionContext) => {
   const accountLoginBody: AccountLoginBody = JSON.parse(request.body);
+  const config = actionContext.frontasticContext?.project?.configuration?.storeContext;
 
   const loginInfo = {
     email: accountLoginBody.email,
@@ -233,7 +234,7 @@ export const login: ActionHook = async (request: Request, actionContext: ActionC
         account,
         organization,
         // @ts-ignore
-        rootCategoryId: organization.store?.custom?.fields?.rootCategory?.id,
+        rootCategoryId: organization.store?.custom?.fields?.[config?.rootCategoryCustomField]?.id,
       },
     };
   } catch (e) {
