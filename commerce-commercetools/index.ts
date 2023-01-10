@@ -33,24 +33,20 @@ export default {
       } as DynamicPageSuccessResult;
     }
     // Identify businessUnit page
-    // Do not remove empty space after |
-    const b2bPageMatch = getPath(request)?.match(/^\/(business-unit|dashboard|)/);
+    const b2bPageMatch = getPath(request)?.match(/^\/(business-unit|dashboard)/);
     if (b2bPageMatch) {
       let organization = request.sessionData?.organization;
       if (!organization.businessUnit && request.sessionData?.account?.accountId) {
         const businessUnitApi = new BusinessUnitApi(context.frontasticContext, getLocale(request));
         organization = await businessUnitApi.getOrganization(request.sessionData.account.accountId);
       }
-      const path = b2bPageMatch[0] === '/' ? '/home' : b2bPageMatch[0];
       return {
-        dynamicPageType: `b2b${path}`,
+        dynamicPageType: `b2b${b2bPageMatch[0]}`,
         dataSourcePayload: {
           organization: request.sessionData?.organization,
         },
         pageMatchingPayload: {
           organization: request.sessionData?.organization,
-          businessUnit: request?.sessionData?.organization?.businessUnit?.topLevelUnit?.key,
-          store: request?.sessionData?.organization?.store?.key,
         },
       } as DynamicPageSuccessResult;
     }
@@ -63,7 +59,6 @@ export default {
         pageMatchingPayload: {},
       } as DynamicPageSuccessResult;
     }
-
     // Identify Product Preview
     if (ProductRouter.identifyPreviewFrom(request)) {
       return ProductRouter.loadPreviewFor(request, context.frontasticContext).then((product: Product) => {
@@ -186,6 +181,26 @@ export default {
         // FIXME: Return proper error result
         return null;
       });
+    }
+    const homePageMatch = getPath(request)?.match(/^\//);
+    if (homePageMatch) {
+      let organization = request.sessionData?.organization;
+      if (!organization.businessUnit && request.sessionData?.account?.accountId) {
+        const businessUnitApi = new BusinessUnitApi(context.frontasticContext, getLocale(request));
+        organization = await businessUnitApi.getOrganization(request.sessionData.account.accountId);
+      }
+
+      return {
+        dynamicPageType: `b2b/home`,
+        dataSourcePayload: {
+          organization: request.sessionData?.organization,
+        },
+        pageMatchingPayload: {
+          organization: request.sessionData?.organization,
+          businessUnit: request?.sessionData?.organization?.businessUnit?.topLevelUnit?.key,
+          store: request?.sessionData?.organization?.store?.key,
+        },
+      } as DynamicPageSuccessResult;
     }
 
     return null;
