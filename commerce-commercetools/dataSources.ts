@@ -102,6 +102,16 @@ export default {
       },
     };
   },
+  'b2b/notifications': async (config: DataSourceConfiguration, context: DataSourceContext) => {
+    console.debug('reading session', context.request.sessionData?.notificationToken);
+    const notificationToken = context.request.sessionData?.notificationToken;
+
+    return {
+      dataSourcePayload: {
+        notificationToken,
+      },
+    };
+  },
   'b2b/organization-tree': async (config: DataSourceConfiguration, context: DataSourceContext) => {
     const businessUnitApi = new BusinessUnitApi(
       context.frontasticContext,

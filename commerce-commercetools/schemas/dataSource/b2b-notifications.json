@@ -1,0 +1,7 @@
+{
+  "customDataSourceType": "b2b/notifications",
+  "name": "B2B Notifications",
+  "category": "Session",
+  "icon": "account_balance",
+  "schema": []
+}
