@@ -128,6 +128,11 @@ export class BusinessUnitApi extends BaseApi {
       return [];
     }
 
+    const config = this.frontasticContext?.project?.configuration?.associateRoles;
+    if (!config?.defaultAdminRoleKey) {
+      throw new Error('Configuration error. No "defaultAdminRoleKey" exists');
+    }
+
     const rootNode = businessUnits.find((bu) => !bu.parentUnit);
     if (rootNode) {
       return [rootNode];
@@ -140,24 +145,37 @@ export class BusinessUnitApi extends BaseApi {
       });
 
     return filterAdmin
-      ? justParents.filter((bu) => isUserAdminInBusinessUnit(bu, accountId))
+      ? justParents.filter((bu) => isUserAdminInBusinessUnit(bu, accountId, config.defaultAdminRoleKey))
       : justParents
           // sort by Admin first
           .sort((a, b) =>
-            isUserAdminInBusinessUnit(a, accountId) ? -1 : isUserAdminInBusinessUnit(b, accountId) ? 1 : 0,
+            isUserAdminInBusinessUnit(a, accountId, config.defaultAdminRoleKey)
+              ? -1
+              : isUserAdminInBusinessUnit(b, accountId, config.defaultAdminRoleKey)
+              ? 1
+              : 0,
           );
   };
 
   getMe: (accountId: string) => Promise<any> = async (accountId: string) => {
     try {
       const storeApi = new StoreApi(this.frontasticContext, this.locale);
+      const config = this.frontasticContext?.project?.configuration?.associateRoles;
+      if (!config?.defaultAdminRoleKey) {
+        throw new Error('Configuration error. No "defaultAdminRoleKey" exists');
+      }
       const allStores = await storeApi.query();
       const results = await this.getAssociatedBusinessUnits(accountId);
       const highestNodes = this.getHighestNodesWithAssociation(results, accountId);
 
       if (highestNodes.length) {
         const bu = await this.setStoresByBusinessUnit(highestNodes[0] as CommercetoolsBusinessUnit);
-        return mapBusinessUnitToBusinessUnit(bu as CommercetoolsBusinessUnit, allStores, accountId);
+        return mapBusinessUnitToBusinessUnit(
+          bu as CommercetoolsBusinessUnit,
+          allStores,
+          accountId,
+          config.defaultAdminRoleKey,
+        );
       }
       return results;
     } catch (e) {
@@ -179,6 +197,10 @@ export class BusinessUnitApi extends BaseApi {
   };
 
   get: (key: string, accountId?: string) => Promise<BusinessUnit> = async (key: string, accountId?: string) => {
+    const config = this.frontasticContext?.project?.configuration?.associateRoles;
+    if (!config?.defaultAdminRoleKey) {
+      throw new Error('Configuration error. No "defaultAdminRoleKey" exists');
+    }
     const storeApi = new StoreApi(this.frontasticContext, this.locale);
     const allStores = await storeApi.query();
     try {
@@ -188,7 +210,12 @@ export class BusinessUnitApi extends BaseApi {
         .get()
         .execute()
         .then((res) => this.setStoresByBusinessUnit(res.body));
-      return mapBusinessUnitToBusinessUnit(bu as CommercetoolsBusinessUnit, allStores, accountId);
+      return mapBusinessUnitToBusinessUnit(
+        bu as CommercetoolsBusinessUnit,
+        allStores,
+        accountId,
+        config.defaultAdminRoleKey,
+      );
     } catch (e) {
       throw e;
     }

@@ -7,7 +7,7 @@ export class NotificationApi extends BaseApi {
       const config = this.frontasticContext?.project?.configuration?.notifications;
 
       if (!config || !config.accessTokenService) {
-        return Promise.reject('accessTokenService is not configured, cannot login');
+        return '';
       }
 
       try {

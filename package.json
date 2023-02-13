@@ -19,8 +19,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.16.5",
-        "@commercetools/platform-sdk": "^4.2.0",
-        "@commercetools/sdk-client-v2": "^2.1.0",
+        "@commercetools/platform-sdk": "^4.4.0",
+        "@commercetools/sdk-client-v2": "^2.1.1",
         "@types/jest": "^27.4.1",
         "axios": "^0.27.2",
         "contentful": "^9.1.32",

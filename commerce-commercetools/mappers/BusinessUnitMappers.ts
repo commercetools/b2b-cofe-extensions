@@ -1,19 +1,19 @@
 import { BusinessUnit } from '@Types/business-unit/BusinessUnit';
 import { BusinessUnit as CommercetoolsBusinessUnit } from '@commercetools/platform-sdk';
 import { Store } from '@Types/store/store';
-import { AssociateRole } from '@Types/associate/Associate';
 
 export const mapBusinessUnitToBusinessUnit = (
   businessUnit: CommercetoolsBusinessUnit,
   allStores: Store[],
-  accountId?: string,
+  accountId: string,
+  adminRoleKey: string,
 ): BusinessUnit => {
   const businessUnitWithAssociates = mapReferencedAssociates(businessUnit);
 
   const businessUnitWithStores = mapStoreRefs(businessUnitWithAssociates, allStores);
 
   const businessUnitWithFlags = accountId
-    ? addBUsinessUnitAdminFlags(businessUnitWithStores, accountId)
+    ? addBUsinessUnitAdminFlags(businessUnitWithStores, accountId, adminRoleKey)
     : businessUnitWithStores;
 
   return trimBusinessUnit(businessUnitWithFlags);
@@ -29,28 +29,42 @@ const trimBusinessUnit = (businessUnit: BusinessUnit): BusinessUnit => {
     isAdmin: businessUnit.isAdmin,
     parentUnit: businessUnit.parentUnit,
     storeMode: businessUnit.storeMode,
-    associates: businessUnit.associates.map((associate) => ({
-      roles: associate.roles,
+    associates: businessUnit.associates?.map((associate) => ({
+      associateRoleAssignments: associate.associateRoleAssignments?.map((role) => ({
+        associateRole: { key: role.associateRole.key },
+      })),
       customer: { id: associate.customer.id },
     })),
   };
 };
 
-export const isUserAdminInBusinessUnit = (businessUnit: BusinessUnit, accountId: string): boolean => {
-  const currentUserAssociate = businessUnit.associates.find((associate) => associate.customer.id === accountId);
-  return currentUserAssociate?.roles.some((role) => role === AssociateRole.Admin);
+export const isUserAdminInBusinessUnit = (
+  businessUnit: BusinessUnit,
+  accountId: string,
+  adminRoleKey: string,
+): boolean => {
+  const currentUserAssociate = businessUnit.associates?.find((associate) => associate.customer.id === accountId);
+  return currentUserAssociate?.associateRoleAssignments.some((role) => role.associateRole.key === adminRoleKey);
 };
 
-export const isUserRootAdminInBusinessUnit = (businessUnit: BusinessUnit, accountId: string): boolean => {
-  if (isUserAdminInBusinessUnit(businessUnit, accountId)) {
+export const isUserRootAdminInBusinessUnit = (
+  businessUnit: BusinessUnit,
+  accountId: string,
+  adminRoleKey: string,
+): boolean => {
+  if (isUserAdminInBusinessUnit(businessUnit, accountId, adminRoleKey)) {
     return !businessUnit.parentUnit;
   }
   return false;
 };
 
-export const addBUsinessUnitAdminFlags = (businessUnit: BusinessUnit, accountId = ''): BusinessUnit => {
-  businessUnit.isAdmin = isUserAdminInBusinessUnit(businessUnit, accountId);
-  businessUnit.isRootAdmin = isUserRootAdminInBusinessUnit(businessUnit, accountId);
+export const addBUsinessUnitAdminFlags = (
+  businessUnit: BusinessUnit,
+  accountId = '',
+  adminRoleKey: string,
+): BusinessUnit => {
+  businessUnit.isAdmin = isUserAdminInBusinessUnit(businessUnit, accountId, adminRoleKey);
+  businessUnit.isRootAdmin = isUserRootAdminInBusinessUnit(businessUnit, accountId, adminRoleKey);
   return businessUnit;
 };
 
@@ -60,7 +74,8 @@ export const mapReferencedAssociates = (businessUnit: CommercetoolsBusinessUnit)
     associates: businessUnit.associates?.map((associate) => {
       if (associate.customer?.obj) {
         return {
-          roles: associate.roles,
+          // @ts-ignore
+          associateRoleAssignments: associate.associateRoleAssignments,
           customer: {
             id: associate.customer.id,
             typeId: 'customer',
