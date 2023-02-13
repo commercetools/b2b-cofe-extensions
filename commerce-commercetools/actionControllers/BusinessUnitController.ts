@@ -1,6 +1,5 @@
 import { ActionContext, Request, Response } from '@frontastic/extension-types';
 import { BusinessUnit, BusinessUnitStatus, BusinessUnitType, StoreMode } from '@Types/business-unit/BusinessUnit';
-import { AssociateRole } from '@Types/associate/Associate';
 import { BusinessUnitApi } from '../apis/BusinessUnitApi';
 import { getLocale } from '../utils/Request';
 import { AccountRegisterBody } from './AccountController';
@@ -97,7 +96,15 @@ export const getBusinessUnitOrders: ActionHook = async (request: Request, action
 
 export const create: ActionHook = async (request: Request, actionContext: ActionContext) => {
   const businessUnitApi = new BusinessUnitApi(actionContext.frontasticContext, getLocale(request));
-  const data = mapRequestToBusinessUnit(request);
+  const config = actionContext.frontasticContext?.project?.configuration?.associateRoles;
+  if (!config?.defaultBuyerRoleKey || !config?.defaultAdminRoleKey) {
+    return {
+      statusCode: 400,
+      error: 'No associateRoles context defined',
+      errorCode: 400,
+    };
+  }
+  const data = mapRequestToBusinessUnit(request, config);
 
   const store = await businessUnitApi.create(data);
 
@@ -113,7 +120,7 @@ export const create: ActionHook = async (request: Request, actionContext: Action
 export const addAssociate: ActionHook = async (request: Request, actionContext: ActionContext) => {
   const businessUnitApi = new BusinessUnitApi(actionContext.frontasticContext, getLocale(request));
   const customerApi = new CustomerApi(actionContext.frontasticContext, getLocale(request));
-  const addUserBody: { email: string; roles: AssociateRole[] } = JSON.parse(request.body);
+  const addUserBody: { email: string; roles: string[] } = JSON.parse(request.body);
 
   const account = await customerApi.get(addUserBody.email);
   if (!account) {
@@ -133,7 +140,12 @@ export const addAssociate: ActionHook = async (request: Request, actionContext: 
           // @ts-ignore
           id: account.id,
         },
-        roles: addUserBody.roles,
+        associateRoleAssignments: addUserBody.roles.map((role) => ({
+          associateRole: {
+            typeId: 'associate-role',
+            key: role,
+          },
+        })),
       },
     },
   ]);
@@ -174,7 +186,7 @@ export const removeAssociate: ActionHook = async (request: Request, actionContex
 export const updateAssociate: ActionHook = async (request: Request, actionContext: ActionContext) => {
   const businessUnitApi = new BusinessUnitApi(actionContext.frontasticContext, getLocale(request));
 
-  const { id, roles } = JSON.parse(request.body);
+  const { id, roles }: { id: string; roles: string[] } = JSON.parse(request.body);
 
   const businessUnit = await businessUnitApi.update(request.query['key'], [
     {
@@ -184,7 +196,12 @@ export const updateAssociate: ActionHook = async (request: Request, actionContex
           typeId: 'customer',
           id,
         },
-        roles: roles,
+        associateRoleAssignments: roles.map((role) => ({
+          associateRole: {
+            typeId: 'associate-role',
+            key: role,
+          },
+        })),
       },
     },
   ]);
@@ -288,7 +305,7 @@ export const query: ActionHook = async (request: Request, actionContext: ActionC
   return response;
 };
 
-function mapRequestToBusinessUnit(request: Request): BusinessUnit {
+function mapRequestToBusinessUnit(request: Request, config: Record<string, string>): BusinessUnit {
   const businessUnitBody: BusinessUnitRequestBody = JSON.parse(request.body);
   const normalizedName = businessUnitBody.account.company.toLowerCase().replace(/ /g, '_');
   const key = businessUnitBody.parentBusinessUnit
@@ -324,7 +341,20 @@ function mapRequestToBusinessUnit(request: Request): BusinessUnit {
     contactEmail: businessUnitBody.account.email,
     associates: [
       {
-        roles: [AssociateRole.Admin, AssociateRole.Buyer],
+        associateRoleAssignments: [
+          {
+            associateRole: {
+              key: config.defaultBuyerRoleKey,
+              typeId: 'associate-role',
+            },
+          },
+          {
+            associateRole: {
+              key: config.defaultAdminRoleKey,
+              typeId: 'associate-role',
+            },
+          },
+        ],
         customer: {
           id: businessUnitBody.customer.accountId,
           typeId: 'customer',
