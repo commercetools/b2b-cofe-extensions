@@ -7,6 +7,7 @@ import { CartFetcher } from '../utils/CartFetcher';
 import { getLocale } from '../utils/Request';
 import { EmailApi } from '../apis/EmailApi';
 import { BusinessUnitApi } from '../apis/BusinessUnitApi';
+import { NotificationApi } from '../apis/NotificationApi';
 
 type ActionHook = (request: Request, actionContext: ActionContext) => Promise<Response>;
 
@@ -38,14 +39,16 @@ type AccountChangePasswordBody = {
 async function loginAccount(request: Request, actionContext: ActionContext, account: Account, reverify = false) {
   const accountApi = new AccountApi(actionContext.frontasticContext, getLocale(request));
   const businessUnitApi = new BusinessUnitApi(actionContext.frontasticContext, getLocale(request));
+  const notificationApi = new NotificationApi(actionContext.frontasticContext, getLocale(request));
 
   const cart = await CartFetcher.fetchCart(request, actionContext);
 
   try {
     const accountRes = await accountApi.login(account, cart, reverify);
     const organization = await businessUnitApi.getOrganization(accountRes.accountId);
+    const token = await notificationApi.getToken(account.email, account.password);
 
-    return { account: accountRes, organization };
+    return { account: accountRes, organization, token };
   } catch (e) {
     throw e;
   }
@@ -225,7 +228,8 @@ export const login: ActionHook = async (request: Request, actionContext: ActionC
   let response: Response;
 
   try {
-    const { account, organization } = await loginAccount(request, actionContext, loginInfo);
+    const { account, organization, token } = await loginAccount(request, actionContext, loginInfo);
+    console.debug('set in session', token);
     response = {
       statusCode: 200,
       body: JSON.stringify(account),
@@ -235,6 +239,7 @@ export const login: ActionHook = async (request: Request, actionContext: ActionC
         organization,
         // @ts-ignore
         rootCategoryId: organization.store?.custom?.fields?.[config?.rootCategoryCustomField]?.id,
+        notificationToken: token,
       },
     };
   } catch (e) {
